@@ -1,6 +1,6 @@
 {
   "name": "noskey",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "generate nostr key",
   "main": "index.js",
   "bin": {
@@ -8,9 +8,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bin": {
-    "noskey": "bin/noskey.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +23,8 @@
   },
   "homepage": "https://github.com/melvincarvalho/noskey#readme",
   "dependencies": {
-    "nostr-tools": "^1.1.1"
+    "libsodium-wrappers": "^0.7.10",
+    "nostr-tools": "^1.1.1",
+    "yargs": "^17.6.2"
   }
 }

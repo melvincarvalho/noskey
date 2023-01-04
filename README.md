@@ -33,7 +33,22 @@ Generate nostr keys from command line
 ```bash
 npx noskey
 ```
+
+```bash
+npx noskey --vanity 123
+```
 ---
+
+## Usage
+
+```
+Usage: noskey [options]
+
+Options:
+      --version  Show version number
+  -v, --vanity   Vanity string
+  -h, --help     Show help                             
+```
 
 ## ⚖️ License
 
