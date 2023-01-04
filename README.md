@@ -1,0 +1,2 @@
+# noskey
+generate nostr key
