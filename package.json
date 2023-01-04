@@ -1,0 +1,31 @@
+{
+  "name": "noskey",
+  "version": "0.0.1",
+  "description": "generate nostr key",
+  "main": "index.js",
+  "bin": {
+    "noskey": "bin/noskey.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "noskey": "bin/noskey.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/melvincarvalho/noskey.git"
+  },
+  "keywords": [
+    "nostr"
+  ],
+  "author": "Melvin Carvalho",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/melvincarvalho/noskey/issues"
+  },
+  "homepage": "https://github.com/melvincarvalho/noskey#readme",
+  "dependencies": {
+    "nostr-tools": "^1.1.1"
+  }
+}
