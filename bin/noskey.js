@@ -28,7 +28,6 @@ const argv = require('yargs')
 // console.log(argv)
 
 var vanity = argv.v || ''
-var privateKey = argv.p || generatePrivateKey()
 
 const hexToBuffer = hex => Buffer.from(hex, 'hex');
 function generate_public_key(privKey) {
@@ -36,6 +35,7 @@ function generate_public_key(privKey) {
 }
 
 while (true) {
+	var privateKey = argv.p || generatePrivateKey()
 	let publicKey = getPublicKey(privateKey);
 
 	if (publicKey.startsWith(vanity)) {
