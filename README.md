@@ -23,6 +23,7 @@ Generate nostr keys from command line
 ## ⚡️ Features
 
 &nbsp;&nbsp;✓&nbsp; Generate Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate Private Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate from private key  
@@ -76,9 +77,10 @@ Options:
 
 ```json
 {
-  "privkey": "18acc881234b739e4135f407e6eba7c5c28d916c5efab594b849a0d776932522",
-  "pubkey": "f6d3fe71a5ce486a11510945cefc87562d6386e4ad7f234de33b96da3ebfd8da",
-  "ed25519pubkey": "3963746904ee0baa58dff9e31bd8304666598095558c65545fee7e07113b6f80"
+  "privkey": "54df4a2dd3d64eae0b5ede2844e243b42f5c074f378410f7bafd6dd68e0551ff",
+  "pubkey": "f06777201179cb34667a349ad95cf9f73c79059cbd17cd75323884891ab47c09",
+  "npub": "npub17pnhwgq3089ngen6xjddjh8e7u78jpvuh5tu6afj8zzgjx450sysadt4jr",
+  "ed25519pubkey": "e14563b44e982fe4e4cec85e3af9a23562b2d57d00aaaddffa055ad7318bed06"
 }
 ```
 

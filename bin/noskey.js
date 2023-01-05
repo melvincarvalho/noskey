@@ -2,9 +2,11 @@
 
 const {
 	generatePrivateKey,
-	getPublicKey
+	getPublicKey,
+	nip19
 } = require("nostr-tools");
 const ed25519 = require('ed25519');
+
 
 // require yargs
 const argv = require('yargs')
@@ -42,6 +44,7 @@ while (true) {
 		var output = {
 			privkey: privateKey,
 			pubkey: publicKey,
+			npub: nip19.npubEncode(publicKey),
 			ed25519pubkey: ed25519pubkey
 		}
 
