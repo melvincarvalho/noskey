@@ -1,6 +1,6 @@
 {
   "name": "noskey",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "generate nostr key",
   "main": "index.js",
   "bin": {

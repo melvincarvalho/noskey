@@ -24,9 +24,11 @@ Generate nostr keys from command line
 
 &nbsp;&nbsp;✓&nbsp; Generate Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate Private Key  
 &nbsp;&nbsp;✓&nbsp; Generate nsec Private Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate ed25519 openssh Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate from private key  
 &nbsp;&nbsp;✓&nbsp; Vanity Keys  
 &nbsp;&nbsp;✓&nbsp; Run with npx or install  
@@ -78,10 +80,13 @@ Options:
 
 ```json
 {
-  "privkey": "54df4a2dd3d64eae0b5ede2844e243b42f5c074f378410f7bafd6dd68e0551ff",
-  "pubkey": "f06777201179cb34667a349ad95cf9f73c79059cbd17cd75323884891ab47c09",
-  "npub": "npub17pnhwgq3089ngen6xjddjh8e7u78jpvuh5tu6afj8zzgjx450sysadt4jr",
-  "ed25519pubkey": "e14563b44e982fe4e4cec85e3af9a23562b2d57d00aaaddffa055ad7318bed06"
+  "privkey": "c6157c9fec0b9baf6d1da9045322aab2f362b9445b1c07647c50ffe86b27de47",
+  "nsec": "nsec1cc2he8lvpwd67mga4yz9xg42ktek9w2ytvwqweru2rl7s6e8mersh7h3vk",
+  "pubkey": "825d6e28bee7247f689ac1243e3bdca739f097182904b9de0c487c07756691db",
+  "npub": "npub1sfwku297uuj876y6cyjruw7u5uulp9cc9yztnhsvfp7qwatxj8dsg48sf3",
+  "taproot": "bc1p1sfwku297uuj876y6cyjruw7u5uulp9cc9yztnhsvfp7qwatxj8ds3c8rrg",
+  "ed25519pubkey": "f69af2d4a7004e7de42655f1cee9087161ab7dafd59d026b5f7c1047bc454bcb",
+  "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPaa8tSnAE595CZV8c7pCHFhq32v1Z0Ca198EEe8RUvL"
 }
 ```
 

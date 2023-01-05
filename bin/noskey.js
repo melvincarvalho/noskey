@@ -47,6 +47,13 @@ function generate_public_key(privKey) {
 	return ed25519.MakeKeypair(hexToBuffer(privKey)).publicKey.toString('hex');
 }
 
+// function to convert hex string to base64 string
+function hexToBase64(str) {
+	return Buffer.from(str, 'hex').toString('base64');
+}
+
+const ed25519_prefix = '0000000b7373682d6564323535313900000020'
+
 while (true) {
 	var privateKey = argv.p || generatePrivateKey()
 	let publicKey = getPublicKey(privateKey);
@@ -61,7 +68,8 @@ while (true) {
 			pubkey: publicKey,
 			npub: nip19.npubEncode(publicKey),
 			taproot: encodeBytes('bc1p', publicKey),
-			ed25519pubkey: ed25519pubkey
+			ed25519pubkey: ed25519pubkey,
+			openSSHed25519pubkey: `ssh-ed25519 ${hexToBase64(ed25519_prefix + ed25519pubkey)}`
 		}
 
 		console.log(JSON.stringify(output, null, 2))
