@@ -5,6 +5,12 @@ const {
 	getPublicKey,
 	nip19
 } = require("nostr-tools");
+const
+	secp256k1
+		= require("@noble/secp256k1");
+const {
+	bech32,
+} = require("@scure/base");
 const ed25519 = require('ed25519');
 
 
@@ -27,6 +33,12 @@ const argv = require('yargs')
 
 // console.log(argv)
 
+function encodeBytes(prefix, hex) {
+	let data = secp256k1.utils.hexToBytes(hex)
+	let words = bech32.toWords(data)
+	return bech32.encode(prefix, words, 1500)
+}
+
 var vanity = argv.v || ''
 
 const hexToBuffer = hex => Buffer.from(hex, 'hex');
@@ -39,6 +51,7 @@ while (true) {
 	var privateKey = argv.p || generatePrivateKey()
 	let publicKey = getPublicKey(privateKey);
 
+
 	if (publicKey.startsWith(vanity)) {
 		var ed25519pubkey = generate_public_key(privateKey)
 
@@ -47,6 +60,7 @@ while (true) {
 			nsec: nip19.nsecEncode(privateKey),
 			pubkey: publicKey,
 			npub: nip19.npubEncode(publicKey),
+			taproot: encodeBytes('bc1p', publicKey),
 			ed25519pubkey: ed25519pubkey
 		}
 
