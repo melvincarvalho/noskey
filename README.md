@@ -25,6 +25,7 @@ Generate nostr keys from command line
 &nbsp;&nbsp;✓&nbsp; Generate Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate Private Key  
+&nbsp;&nbsp;✓&nbsp; Generate nsec Private Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate from private key  
 &nbsp;&nbsp;✓&nbsp; Vanity Keys  

@@ -30,6 +30,7 @@ const argv = require('yargs')
 var vanity = argv.v || ''
 
 const hexToBuffer = hex => Buffer.from(hex, 'hex');
+
 function generate_public_key(privKey) {
 	return ed25519.MakeKeypair(hexToBuffer(privKey)).publicKey.toString('hex');
 }
@@ -43,6 +44,7 @@ while (true) {
 
 		var output = {
 			privkey: privateKey,
+			nsec: nip19.nsecEncode(privateKey),
 			pubkey: publicKey,
 			npub: nip19.npubEncode(publicKey),
 			ed25519pubkey: ed25519pubkey
