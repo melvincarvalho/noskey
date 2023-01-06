@@ -80,13 +80,14 @@ Options:
 
 ```json
 {
-  "privkey": "c6157c9fec0b9baf6d1da9045322aab2f362b9445b1c07647c50ffe86b27de47",
-  "nsec": "nsec1cc2he8lvpwd67mga4yz9xg42ktek9w2ytvwqweru2rl7s6e8mersh7h3vk",
-  "pubkey": "825d6e28bee7247f689ac1243e3bdca739f097182904b9de0c487c07756691db",
-  "npub": "npub1sfwku297uuj876y6cyjruw7u5uulp9cc9yztnhsvfp7qwatxj8dsg48sf3",
-  "taproot": "bc1p1sfwku297uuj876y6cyjruw7u5uulp9cc9yztnhsvfp7qwatxj8ds3c8rrg",
-  "ed25519pubkey": "f69af2d4a7004e7de42655f1cee9087161ab7dafd59d026b5f7c1047bc454bcb",
-  "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPaa8tSnAE595CZV8c7pCHFhq32v1Z0Ca198EEe8RUvL"
+  "privkey": "2978c96896e21a75a1a9e5caec040c2b610ab2fafb73785c3370253f325e6bf9",
+  "nsec": "nsec199uvj6ykugd8tgdfuh9wcpqv9dss4vh6ldehshpnwqjn7vj7d0uswzzsxm",
+  "pubkey": "c9aeff80b1455a641c7d3c6095a7cee6cdc0108c96d484a2394e3743a7270353",
+  "npub": "npub1exh0lq93g4dxg8ra83sftf7wumxuqyyvjm2gfg3efcm58fe8qdfspfcvja",
+  "taproot": "bc1p1exh0lq93g4dxg8ra83sftf7wumxuqyyvjm2gfg3efcm58fe8qdfscyclcy",
+  "taproottestnet": "tb1p1exh0lq93g4dxg8ra83sftf7wumxuqyyvjm2gfg3efcm58fe8qdfsy2gdrj",
+  "ed25519pubkey": "6abcc8a74c992a96f1726a9507b268707aa0b34109bb645ac147764b6865ccfd",
+  "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGq8yKdMmSqW8XJqlQeyaHB6oLNBCbtkWsFHdktoZcz9"
 }
 ```
 
