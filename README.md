@@ -26,6 +26,8 @@ Generate nostr keys from command line
 &nbsp;&nbsp;✓&nbsp; Generate nsec Private Key  
 &nbsp;&nbsp;✓&nbsp; Generate Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate compressed Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate bitcoin address  
+&nbsp;&nbsp;✓&nbsp; Generate bitcoin testnet3 address  
 &nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate taproot Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate taproot test Public Key  
@@ -82,15 +84,17 @@ Options:
 
 ```json
 {
-  "privkey": "92634fba65ff2338e5afad63da0f89a53121e210f863848201a745e660e33504",
-  "nsec": "nsec1jf35lwn9lu3n3ed0443a5ruf55cjrcsslp3cfqsp5az7vc8rx5zqh8jrqr",
-  "pubkey": "0080afbcdd233eab2e148c0716e962cf8c3b5d9f9dd66754782943a71f09d7c8",
-  "pubkeycompressed": "020080afbcdd233eab2e148c0716e962cf8c3b5d9f9dd66754782943a71f09d7c8",
-  "npub": "npub1qzq2l0xayvl2kts53sr3d6tze7xrkhvlnhtxw4rc99p6w8cf6lyq024864",
-  "taproot": "bc1p1qzq2l0xayvl2kts53sr3d6tze7xrkhvlnhtxw4rc99p6w8cf6lyqk845sv",
-  "taproottestnet": "tb1p1qzq2l0xayvl2kts53sr3d6tze7xrkhvlnhtxw4rc99p6w8cf6lyq2f9xt6",
-  "ed25519pubkey": "4ac740ddff4d4545c11679a588b519682a27eca363c93da147b7206c65c0e8f6",
-  "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIErHQN3/TUVFwRZ5pYi1GWgqJ+yjY8k9oUe3IGxlwOj2"
+  "privkey": "69fb43a2b7d606e37fd107a535f984041ff52a0166eb9278430fc8c483b72403",
+  "nsec": "nsec1d8a58g4h6crwxl73q7jnt7vyqs0l22spvm4ey7zrplyvfqahyspsv5fa95",
+  "pubkey": "b8663282d86d1c5f8c806087b25f57dd6a88efb4e09a03ffcd6770d8af413370",
+  "pubkeycompressed": "03b8663282d86d1c5f8c806087b25f57dd6a88efb4e09a03ffcd6770d8af413370",
+  "bitcoinPubkey": "1AncgZz6zfyBg7UgXkMgi8JAwxtdLBeD3q",
+  "bitcoinTestnet3Pubkey": "mqJZyd55ohQSTDxJFKL4Y3WVoxVLKPiD9k",
+  "npub": "npub1hpnr9qkcd5w9lryqvzrmyh6hm44g3ma5uzdq8l7dvacd3t6pxdcqeam7dc",
+  "taproot": "bc1p1hpnr9qkcd5w9lryqvzrmyh6hm44g3ma5uzdq8l7dvacd3t6pxdcqqsmd8p",
+  "taproottestnet": "tb1p1hpnr9qkcd5w9lryqvzrmyh6hm44g3ma5uzdq8l7dvacd3t6pxdcqu7tluh",
+  "ed25519pubkey": "45427f19fca470b73620955eaa4b1fc54c2af1fb4edca8ae73bdea37a3780256",
+  "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEVCfxn8pHC3NiCVXqpLH8VMKvH7TtyornO96jejeAJW"
 }
 ```
 

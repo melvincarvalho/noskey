@@ -10,6 +10,7 @@ const {
 } = require('../lib/index.js')
 const tiny = require('tiny-secp256k1')
 const bitcoin = require('bitcoinjs-lib')
+const TESTNET = bitcoin.networks.testnet;
 const { ECPairFactory } = require('ecpair')
 
 // args
@@ -47,6 +48,8 @@ while (true) {
 
 	const keyPair = ECPair.fromPrivateKey(Buffer.from(privateKey, 'hex'))
 	let wif = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
+	let wifTestnet = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: TESTNET })
+
 	// console.log(keyPair.publicKey)
 
 	if (publicKey.startsWith(vanity)) {
@@ -60,6 +63,7 @@ while (true) {
 			pubkey: publicKey,
 			pubkeycompressed: compressed,
 			bitcoinPubkey: wif.address,
+			bitcoinTestnet3Pubkey: wifTestnet.address,
 			npub: npub,
 			taproot: encodeBytes(taproot_prefix, publicKey),
 			taproottestnet: encodeBytes(taproot_testnet_prefix, publicKey),
