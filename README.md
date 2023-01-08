@@ -22,11 +22,13 @@ Generate nostr keys from command line
 
 ## ⚡️ Features
 
-&nbsp;&nbsp;✓&nbsp; Generate Public Key  
-&nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
-&nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate Private Key  
 &nbsp;&nbsp;✓&nbsp; Generate nsec Private Key  
+&nbsp;&nbsp;✓&nbsp; Generate Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate compressed Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate taproot Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate taproot test Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 openssh Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate from private key  
@@ -80,14 +82,15 @@ Options:
 
 ```json
 {
-  "privkey": "2978c96896e21a75a1a9e5caec040c2b610ab2fafb73785c3370253f325e6bf9",
-  "nsec": "nsec199uvj6ykugd8tgdfuh9wcpqv9dss4vh6ldehshpnwqjn7vj7d0uswzzsxm",
-  "pubkey": "c9aeff80b1455a641c7d3c6095a7cee6cdc0108c96d484a2394e3743a7270353",
-  "npub": "npub1exh0lq93g4dxg8ra83sftf7wumxuqyyvjm2gfg3efcm58fe8qdfspfcvja",
-  "taproot": "bc1p1exh0lq93g4dxg8ra83sftf7wumxuqyyvjm2gfg3efcm58fe8qdfscyclcy",
-  "taproottestnet": "tb1p1exh0lq93g4dxg8ra83sftf7wumxuqyyvjm2gfg3efcm58fe8qdfsy2gdrj",
-  "ed25519pubkey": "6abcc8a74c992a96f1726a9507b268707aa0b34109bb645ac147764b6865ccfd",
-  "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGq8yKdMmSqW8XJqlQeyaHB6oLNBCbtkWsFHdktoZcz9"
+  "privkey": "92634fba65ff2338e5afad63da0f89a53121e210f863848201a745e660e33504",
+  "nsec": "nsec1jf35lwn9lu3n3ed0443a5ruf55cjrcsslp3cfqsp5az7vc8rx5zqh8jrqr",
+  "pubkey": "0080afbcdd233eab2e148c0716e962cf8c3b5d9f9dd66754782943a71f09d7c8",
+  "pubkeycompressed": "020080afbcdd233eab2e148c0716e962cf8c3b5d9f9dd66754782943a71f09d7c8",
+  "npub": "npub1qzq2l0xayvl2kts53sr3d6tze7xrkhvlnhtxw4rc99p6w8cf6lyq024864",
+  "taproot": "bc1p1qzq2l0xayvl2kts53sr3d6tze7xrkhvlnhtxw4rc99p6w8cf6lyqk845sv",
+  "taproottestnet": "tb1p1qzq2l0xayvl2kts53sr3d6tze7xrkhvlnhtxw4rc99p6w8cf6lyq2f9xt6",
+  "ed25519pubkey": "4ac740ddff4d4545c11679a588b519682a27eca363c93da147b7206c65c0e8f6",
+  "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIErHQN3/TUVFwRZ5pYi1GWgqJ+yjY8k9oUe3IGxlwOj2"
 }
 ```
 

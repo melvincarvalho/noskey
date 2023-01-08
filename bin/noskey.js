@@ -9,8 +9,11 @@ const {
 const {
 	encodeBytes,
 	generate_public_key,
-	hexToBase64
+	hexToBase64,
+	bufferToHex
 } = require('../lib/index.js');
+const tiny = require('tiny-secp256k1')
+
 
 // args
 const argv = require('yargs')
@@ -42,15 +45,20 @@ const taproot_testnet_prefix = 'tb1p'
 while (true) {
 	var privateKey = argv.p || generatePrivateKey()
 	let publicKey = getPublicKey(privateKey);
+	let npub = nip19.npubEncode(publicKey)
+	// console.log(npub)
 
 	if (publicKey.startsWith(vanity)) {
 		var ed25519pubkey = generate_public_key(privateKey)
+		const p = tiny.pointFromScalar(Buffer.from(privateKey, 'hex'))
+		var compressed = bufferToHex(p)
 
 		var output = {
 			privkey: privateKey,
 			nsec: nip19.nsecEncode(privateKey),
 			pubkey: publicKey,
-			npub: nip19.npubEncode(publicKey),
+			pubkeycompressed: compressed,
+			npub: npub,
 			taproot: encodeBytes(taproot_prefix, publicKey),
 			taproottestnet: encodeBytes(taproot_testnet_prefix, publicKey),
 			ed25519pubkey: ed25519pubkey,
