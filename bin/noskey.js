@@ -6,12 +6,14 @@ const {
 	encodeBytes,
 	generate_public_key,
 	hexToBase64,
-	bufferToHex
+	bufferToHex,
+	encodePEM
 } = require('../lib/index.js')
 const tiny = require('tiny-secp256k1')
 const bitcoin = require('bitcoinjs-lib')
 const TESTNET = bitcoin.networks.testnet;
-const { ECPairFactory } = require('ecpair')
+const { ECPairFactory } = require('ecpair');
+const { encode } = require('bitcoinjs-lib/src/script_number.js');
 
 // args
 const argv = require('yargs')
@@ -56,6 +58,7 @@ while (true) {
 		var ed25519pubkey = generate_public_key(privateKey)
 		const p = tiny.pointFromScalar(Buffer.from(privateKey, 'hex'))
 		var compressed = bufferToHex(p)
+		var privkeyPEM = encodePEM(({ publicKey: publicKey, privateKey: privateKey }))
 
 		var output = {
 			privkey: privateKey,
@@ -70,7 +73,8 @@ while (true) {
 			ed25519pubkey: ed25519pubkey,
 			openSSHed25519pubkey: `${ed25519_ssh_prefix} ${hexToBase64(
 				ed25519_prefix + ed25519pubkey
-			)}`
+			)}`,
+			openSSHed25519privkey: privkeyPEM
 		}
 
 		console.log(JSON.stringify(output, null, 2))
