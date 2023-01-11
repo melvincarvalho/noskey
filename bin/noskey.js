@@ -58,7 +58,7 @@ while (true) {
 		var ed25519pubkey = generate_public_key(privateKey)
 		const p = tiny.pointFromScalar(Buffer.from(privateKey, 'hex'))
 		var compressed = bufferToHex(p)
-		var privkeyPEM = encodePEM(({ publicKey: publicKey, privateKey: privateKey }))
+		var privkeyPEM = encodePEM({ publicKey: ed25519pubkey, privateKey: privateKey })
 
 		var output = {
 			privkey: privateKey,
