@@ -43,6 +43,11 @@ const argv = yarg
 		describe: 'Vanity string',
 		type: 'string'
 	})
+	.option('n', {
+		alias: 'npub',
+		describe: 'npub Vanity string',
+		type: 'string'
+	})
 	.option('p', {
 		alias: 'priv',
 		describe: 'Private key',
@@ -52,14 +57,17 @@ const argv = yarg
 	.alias('h', 'help').argv
 
 // INIT
-console.log(argv)
+// console.log(argv)
 var vanity = argv.v || ''
+var npubvanity = argv.n || ''
 const ECPair = ECPairFactory(tiny)
 
 const ed25519_prefix = '0000000b7373682d6564323535313900000020'
 const ed25519_ssh_prefix = 'ssh-ed25519'
 const taproot_prefix = 'bc1p'
 const taproot_testnet_prefix = 'tb1p'
+const npub_prefix = 'npub1'
+
 
 // MAIN
 while (true) {
@@ -74,7 +82,7 @@ while (true) {
 
 	// console.log(keyPair.publicKey)
 
-	if (publicKey.startsWith(vanity)) {
+	if (publicKey.startsWith(vanity) && npub.slice(npub_prefix.length).startsWith(npubvanity)) {
 		var ed25519pubkey = generate_public_key(privateKey)
 		const p = tiny.pointFromScalar(Buffer.from(privateKey, 'hex'))
 		var compressed = bufferToHex(p)
