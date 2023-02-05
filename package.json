@@ -1,6 +1,6 @@
 {
   "name": "noskey",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "generate nostr key",
   "main": "lib/index.js",
   "bin": {
@@ -26,6 +26,7 @@
   "dependencies": {
     "@noble/secp256k1": "^1.7.0",
     "@scure/base": "^1.1.1",
+    "bech32": "^2.0.0",
     "bitcoinjs-lib": "^6.1.0",
     "chai": "^4.3.7",
     "ecpair": "^2.1.0",
