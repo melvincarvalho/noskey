@@ -1,8 +1,8 @@
 {
   "name": "noskey",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "generate nostr key",
-  "main": "index.js",
+  "main": "lib/index.js",
   "bin": {
     "noskey": "bin/noskey.js"
   },
