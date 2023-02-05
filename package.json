@@ -1,6 +1,6 @@
 {
   "name": "noskey",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "generate nostr key",
   "main": "lib/index.js",
   "bin": {
@@ -31,9 +31,11 @@
     "chai": "^4.3.7",
     "ecpair": "^2.1.0",
     "ed25519": "^0.0.5",
+    "fs": "^0.0.1-security",
     "libsodium-wrappers": "^0.7.10",
     "mocha": "^10.2.0",
     "nacl": "^0.1.3",
+    "noskey": "^0.0.25",
     "nostr-tools": "^1.1.1",
     "tiny-secp256k1": "^2.2.1",
     "tweetnacl": "^1.0.3",
