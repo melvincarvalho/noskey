@@ -1,22 +1,42 @@
 #!/usr/bin/env node
 
 // IMPORTS
-const { generatePrivateKey, getPublicKey, nip19 } = require('nostr-tools')
-const {
+import nostrTools from 'nostr-tools'
+const { nip19, generatePrivateKey, getPublicKey } = nostrTools
+import {
 	encodeBytes,
 	generate_public_key,
 	hexToBase64,
 	bufferToHex,
 	encodePEM
-} = require('../lib/index.js')
-const tiny = require('tiny-secp256k1')
-const bitcoin = require('bitcoinjs-lib')
-const TESTNET = bitcoin.networks.testnet;
-const { ECPairFactory } = require('ecpair');
-const { encode } = require('bitcoinjs-lib/src/script_number.js');
+} from '../lib/index.js'
+import * as tiny from 'tiny-secp256k1'
+import bitcoin from 'bitcoinjs-lib'
+// import TESTNET from 'bitcoin'
+import { ECPairFactory } from 'ecpair'
+import { encode } from 'bitcoinjs-lib/src/script_number.js'
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+
+
+const TESTNET = {
+	messagePrefix: '\x18Bitcoin Signed Message:\n',
+	bech32: 'tb',
+	bip32: {
+		public: 0x043587cf,
+		private: 0x04358394,
+	},
+	pubKeyHash: 0x6f,
+	scriptHash: 0xc4,
+	wif: 0xef,
+};
+
 
 // args
-const argv = require('yargs')
+const yarg = yargs(hideBin(process.argv))
+
+console.log(yargs)
+const argv = yarg
 	.usage('Usage: $0 [options]')
 	.option('v', {
 		alias: 'vanity',
@@ -32,7 +52,7 @@ const argv = require('yargs')
 	.alias('h', 'help').argv
 
 // INIT
-// console.log(argv)
+console.log(argv)
 var vanity = argv.v || ''
 const ECPair = ECPairFactory(tiny)
 

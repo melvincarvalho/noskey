@@ -1,11 +1,12 @@
 {
   "name": "noskey",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "generate nostr key",
   "main": "index.js",
   "bin": {
     "noskey": "bin/noskey.js"
   },
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
