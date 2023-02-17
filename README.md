@@ -94,6 +94,7 @@ Options:
   "npub": "npub1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qvesle5tfn",
   "taproot": "bc1p1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qvesx55cr2",
   "taproottestnet": "tb1p1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qves66y2cu",
+  "liquidtaproot": "ex1p1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qvesdq02p7",
   "ed25519pubkey": "c6fcabb4927adf2eb64beb2a99004c836c71944220fe8b7568e04616eac34c29",
   "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMb8q7SSet8utkvrKpkATINscZRCIP6LdWjgRhbqw0wp",
   "openSSHed25519privkey": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACADAQAEAAAAAwAABgAFBgYFAAEACQIAAAAAAwMAAAUAAAAAAIiJTFkeiUxZ\nHgAAAAtzc2gtZWQyNTUxOQAAACADAQAEAAAAAwAABgAFBgYFAAEACQIAAAAAAwMAAAUAAA\nAAAEAACQYCBgcAAAgJBQcAAAAACAMDCQkAAwAGAAAEBQAAAgMBAAQAAAADAAAGAAUGBgUA\nAQAJAgAAAAADAwAABQAAAAAAAAECAwQF\n-----END OPENSSH PRIVATE KEY-----\n"
