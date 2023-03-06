@@ -29,6 +29,7 @@ Generate nostr keys from command line
 &nbsp;&nbsp;✓&nbsp; Generate bitcoin address  
 &nbsp;&nbsp;✓&nbsp; Generate bitcoin testnet3 address  
 &nbsp;&nbsp;✓&nbsp; Generate npub Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate nrepo Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate taproot Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate taproot test Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 Public Key  
@@ -92,6 +93,7 @@ Options:
   "bitcoinPubkey": "1LcHKWvoVW7ZXVtVf7cX3JS6hqvWNnphaB",
   "bitcoinTestnet3Pubkey": "n18Eca1nJXYpJcN7NgatsDeRZqXDJ8EwFD",
   "npub": "npub1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qvesle5tfn",
+  "nrepo": "nrepo1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qveskz7ewj",
   "taproot": "bc1p1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qvesx55cr2",
   "taproottestnet": "tb1p1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qves66y2cu",
   "liquidtaproot": "ex1p1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qvesdq02p7",

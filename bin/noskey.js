@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 // IMPORTS
-import nostrTools from 'nostr-tools'
-const { generatePrivateKey } = nostrTools
+import { generatePrivateKey } from 'nostr-tools'
 import {
 	getAllKeys
 } from '../lib/index.js'
