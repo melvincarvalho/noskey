@@ -3,7 +3,8 @@
 // IMPORTS
 import { generatePrivateKey } from 'nostr-tools'
 import {
-	getAllKeys
+	getAllKeys,
+	decodeBytes
 } from '../lib/index.js'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -29,24 +30,34 @@ const argv = yarg
 		describe: 'Private key',
 		type: 'string'
 	})
+	.option('s', {
+		alias: 'nsec',
+		describe: 'nsec private key',
+		type: 'string'
+	})
 	.help('h')
 	.alias('h', 'help').argv
 
 // INIT
 // console.log(argv)
-var vanity = argv.v || ''
-var npubvanity = argv.n || ''
-
-
+const vanity = argv.v || ''
+const npubvanity = argv.n || ''
+const nsec = argv.s
 
 // MAIN
 while (true) {
-	var privateKey = argv.p || generatePrivateKey()
-	var output = getAllKeys(privateKey)
+	var privateKey
+	if (nsec) {
+		privateKey = decodeBytes(nsec)
+	} else if (argv.p) {
+		privateKey = argv.p
+	} else {
+		privateKey = generatePrivateKey()
+	}
+	const output = getAllKeys(privateKey)
 
 	const npub_prefix = 'npub1'
 	if (output.pubkey.startsWith(vanity) && output.npub.slice(npub_prefix.length).startsWith(npubvanity)) {
-
 		console.log(JSON.stringify(output, null, 2))
 
 		break

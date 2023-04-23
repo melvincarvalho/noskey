@@ -36,6 +36,7 @@ Generate nostr keys from command line
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 openssh Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 openssh Private Key PEM  
 &nbsp;&nbsp;✓&nbsp; Generate from private key  
+&nbsp;&nbsp;✓&nbsp; Generate from nsec  
 &nbsp;&nbsp;✓&nbsp; Vanity Keys  
 &nbsp;&nbsp;✓&nbsp; Run with npx or install  
 
@@ -79,6 +80,7 @@ Options:
       --version  Show version number
   -v, --vanity   Vanity string
   -p, --priv     Private key
+  -s, --nsec     From nsec
   -h, --help     Show help                             
 ```
 
