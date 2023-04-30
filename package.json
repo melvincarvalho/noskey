@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "jsdoc -c jsdoc.json"
+    "docs": "node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,6 @@
     "bech32": "^2.0.0",
     "bitcoinjs-lib": "^6.1.0",
     "chai": "^4.3.7",
-    "docdash": "^2.0.1",
     "ecpair": "^2.1.0",
     "ed25519": "^0.0.5",
     "fs": "^0.0.1-security",
@@ -42,5 +41,9 @@
     "tiny-secp256k1": "^2.2.1",
     "tweetnacl": "^1.0.3",
     "yargs": "^17.6.2"
+  },
+  "devDependencies": {
+    "docdash": "^2.0.1",
+    "jsdoc": "^4.0.2"
   }
 }
