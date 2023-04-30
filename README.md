@@ -105,7 +105,7 @@ Options:
 }
 ```
 
-📚 Documentation
+## 📚 Documentation
 
 Check out the documentation for noskey in the docs directory. There, you can find more detailed information about the features and usage of this tool.
 
