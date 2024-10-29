@@ -13,7 +13,7 @@ Generate nostr keys from command line
 </div>
   
 ---
-  
+
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![npm](https://img.shields.io/npm/v/noskey)](https://npmjs.com/package/noskey)
@@ -33,12 +33,13 @@ Generate nostr keys from command line
 &nbsp;&nbsp;✓&nbsp; Generate taproot Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate taproot test Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate pubky Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 openssh Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate ed25519 openssh Private Key PEM  
 &nbsp;&nbsp;✓&nbsp; Generate from private key  
 &nbsp;&nbsp;✓&nbsp; Generate from nsec  
 &nbsp;&nbsp;✓&nbsp; Vanity Keys  
-&nbsp;&nbsp;✓&nbsp; Run with npx or install  
+&nbsp;&nbsp;✓&nbsp; Run with npx or install
 
 ## ✍️ Getting Started
 
@@ -70,7 +71,6 @@ sudo npm install -g noskey
 
 ---
 
-
 ## Usage
 
 ```
@@ -81,7 +81,7 @@ Options:
   -v, --vanity   Vanity string
   -p, --priv     Private key
   -s, --nsec     From nsec
-  -h, --help     Show help                             
+  -h, --help     Show help
 ```
 
 ## Example Output
@@ -100,6 +100,7 @@ Options:
   "taproottestnet": "tb1p1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qves66y2cu",
   "liquidtaproot": "ex1p1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qvesdq02p7",
   "ed25519pubkey": "c6fcabb4927adf2eb64beb2a99004c836c71944220fe8b7568e04616eac34c29",
+  "pubky": "a56kzpr1xmx17p1m7cij1yncops8dfnnrd9es7mehbdbp4sdjowo",
   "openSSHed25519pubkey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMb8q7SSet8utkvrKpkATINscZRCIP6LdWjgRhbqw0wp",
   "openSSHed25519privkey": "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\nQyNTUxOQAAACADAQAEAAAAAwAABgAFBgYFAAEACQIAAAAAAwMAAAUAAAAAAIiJTFkeiUxZ\nHgAAAAtzc2gtZWQyNTUxOQAAACADAQAEAAAAAwAABgAFBgYFAAEACQIAAAAAAwMAAAUAAA\nAAAEAACQYCBgcAAAgJBQcAAAAACAMDCQkAAwAGAAAEBQAAAgMBAAQAAAADAAAGAAUGBgUA\nAQAJAgAAAAADAwAABQAAAAAAAAECAwQF\n-----END OPENSSH PRIVATE KEY-----\n"
 }
