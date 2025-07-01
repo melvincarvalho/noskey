@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nostr Vanity Address Generator</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .container {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00ff00;
+        }
+        h1 {
+            text-align: center;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #00ff00;
+        }
+        input, select, button {
+            width: 100%;
+            min-height: 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 8px;
+            border: 1px solid #00ff00;
+            background: #1a1a1a;
+            color: #00ff00;
+            border-radius: 5px;
+        }
+        button {
+            background: #003300;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #005500;
+        }
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+        .status {
+            min-height: 60px;
+            background: #111;
+            border: 1px solid #333;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            overflow-y: auto;
+        }
+        .result {
+            background: #002200;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+        .progress {
+            background: #333;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00aa00);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .controls > * {
+            flex: 1;
+            min-width: 200px;
+        }
+        .worker-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .worker {
+            background: #222;
+            padding: 5px;
+            text-align: center;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .worker.active {
+            background: #003300;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .metric {
+            background: #111;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ff00;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #888;
+        }
+        .field-hint {
+            font-size: 11px;
+            color: #666;
+            margin-top: 3px;
+            min-height: 16px;
+            line-height: 16px;
+        }
+        
+        .explorer-link {
+            color: #00ff00 !important;
+            text-decoration: none !important;
+            border: 1px solid #004400;
+            background: #001100;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            display: inline-block;
+            font-family: monospace;
+            transition: all 0.2s;
+            font-size: 11px;
+        }
+        
+        .explorer-link:hover {
+            background: #002200;
+            border-color: #006600;
+            color: #00ffaa !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 255, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Ultra-Fast Nostr Vanity Generator</h1>
+        
+        <div class="input-group">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
+                <label for="pubkey">Starting Public Key (64 hex chars):</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label style="font-size: 8px; color: #555; cursor: pointer; display: flex; align-items: center;">
+                        <input type="checkbox" id="usePrivateKey" style="margin-right: 2px; transform: scale(0.5); opacity: 0.6;"> Use Private Key Instead
+                    </label>
+                    <button id="getNostrKey" onclick="getNostrPubkey()" style="font-size: 8px; padding: 2px 4px; background: #002200; border: 1px solid #004400; color: #00aa00; border-radius: 3px; cursor: pointer; opacity: 0.7;">from nostr</button>
+                </div>
+            </div>
+            <input type="text" id="pubkey" placeholder="bb50e2d89a4ed70663d080659fe0ad4b9bc3e06c17a227433966cb59ceee020d" maxlength="64">
+            <input type="text" id="privkey" placeholder="1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" maxlength="64" style="display: none;">
+        </div>
+        
+        <div class="controls">
+            <div class="input-group">
+                <label for="pattern">Leading Pattern:</label>
+                <select id="pattern">
+                    <option value="0">0 (trivial)</option>
+                    <option value="00">00 (easy)</option>
+                    <option value="000" selected>000 (normal)</option>
+                    <option value="0000">0000 (hard)</option>
+                    <option value="00000">00000 (very hard)</option>
+                    <option value="abc">abc (easy)</option>
+                    <option value="dead">dead (hard)</option>
+                    <option value="beef">beef (hard)</option>
+                    <option value="cafe">cafe (hard)</option>
+                    <option value="babe">babe (hard)</option>
+                    <option value="abcde">abcde (very hard)</option>
+                    <option value="1337">1337 (hard)</option>
+                    <option value="c0de">c0de (hard)</option>
+                </select>
+                <div class="field-hint">Choose pattern or use custom input below</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="workers">Web Workers:</label>
+                <select id="workers">
+                    <option value="1">1 (single-threaded)</option>
+                    <option value="2">2 workers</option>
+                    <option value="4" selected>4 workers</option>
+                    <option value="8">8 workers</option>
+                    <option value="16">16 workers</option>
+                </select>
+                <div class="field-hint">More workers = faster search</div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="customPattern">Custom Pattern (optional):</label>
+            <input type="text" id="customPattern" placeholder="Enter custom hex pattern (overrides dropdown)" maxlength="12">
+        </div>
+        
+        <button id="generateBtn" onclick="startGeneration()">🚀 Generate Vanity Address</button>
+        <button id="stopBtn" onclick="stopGeneration()" disabled>⏹️ Stop</button>
+        
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value" id="attempts">0</div>
+                <div class="metric-label">Attempts</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" id="rate">0</div>
+                <div class="metric-label">Ops/Sec</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" id="elapsed">0.0s</div>
+                <div class="metric-label">Time</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value" id="expected">-</div>
+                <div class="metric-label">Expected</div>
+            </div>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="worker-status" id="workerStatus"></div>
+        
+        <div class="status" id="status">Ready to generate vanity address...</div>
+        
+        <div id="result" class="result" style="display: none;">
+            <h3>🎉 Vanity Address Found!</h3>
+            <div><strong id="resultLabel">Offset:</strong> <span id="resultPrivKey"></span></div>
+            <div><strong>Public Key:</strong> <span id="resultPubKey"></span></div>
+            <div><strong>Bitcoin Addresses:</strong>
+                <div style="margin-top: 8px; font-size: 12px;">
+                    <div style="margin-bottom: 6px;">
+                        <span style="color: #888; font-size: 11px;">Mainnet:</span>
+                        <a id="mainnetLink" href="#" target="_blank" class="explorer-link">
+                            🔗 bc1p...
+                        </a>
+                    </div>
+                    <div>
+                        <span style="color: #888; font-size: 11px;">Testnet4:</span>
+                        <a id="testnetLink" href="#" target="_blank" class="explorer-link">
+                            🔗 tb1p...
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div><strong>Attempts:</strong> <span id="resultAttempts"></span></div>
+            <div><strong>Time:</strong> <span id="resultTime"></span></div>
+        </div>
+    </div>
+
+    <script>
+        // secp256k1 curve parameters
+        const P = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2Fn;
+        const N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141n;
+        const Gx = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798n;
+        const Gy = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8n;
+
+        // Pattern matching functions
+        function getPatternInfo(pattern) {
+            const hexPattern = pattern.toLowerCase();
+            const isValid = /^[0-9a-f]+$/.test(hexPattern);
+            
+            if (!isValid || hexPattern.length === 0) {
+                return { valid: false };
+            }
+            
+            // Calculate expected attempts (16^length)
+            const expectedAttempts = Math.pow(16, hexPattern.length);
+            
+            // Determine difficulty level
+            let difficulty;
+            if (expectedAttempts < 256) difficulty = "trivial";
+            else if (expectedAttempts < 4096) difficulty = "easy";
+            else if (expectedAttempts < 65536) difficulty = "normal";
+            else if (expectedAttempts < 1048576) difficulty = "hard";
+            else if (expectedAttempts < 16777216) difficulty = "very hard";
+            else if (expectedAttempts < 268435456) difficulty = "extreme";
+            else difficulty = "insane";
+            
+            return {
+                valid: true,
+                pattern: hexPattern,
+                length: hexPattern.length,
+                expectedAttempts: expectedAttempts,
+                difficulty: difficulty
+            };
+        }
+        
+        function doesPatternMatch(hexString, pattern) {
+            return hexString.toLowerCase().startsWith(pattern.toLowerCase());
+        }
+
+        let workers = [];
+        let startTime;
+        let totalAttempts = 0;
+        let isRunning = false;
+        let updateInterval;
+
+        function modInverse(a, m) {
+            if (a < 0n) a = (a % m + m) % m;
+            let [old_r, r] = [a, m];
+            let [old_s, s] = [1n, 0n];
+            
+            while (r !== 0n) {
+                const quotient = old_r / r;
+                [old_r, r] = [r, old_r - quotient * r];
+                [old_s, s] = [s, old_s - quotient * s];
+            }
+            
+            return old_s < 0n ? old_s + m : old_s;
+        }
+
+        function modPow(base, exp, mod) {
+            let result = 1n;
+            base = base % mod;
+            while (exp > 0n) {
+                if (exp % 2n === 1n) {
+                    result = (result * base) % mod;
+                }
+                exp = exp >> 1n;
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function pointAdd(x1, y1, x2, y2) {
+            if (x1 === x2) {
+                if (y1 === y2) {
+                    const y1_doubled = (y1 << 1n) % P;
+                    const inv = modInverse(y1_doubled, P);
+                    const x1_squared = (x1 * x1) % P;
+                    const s = (((x1_squared << 1n) + x1_squared) * inv) % P;
+                    const s_squared = (s * s) % P;
+                    const x3 = (s_squared - (x1 << 1n)) % P;
+                    const y3 = (s * (x1 - x3) - y1) % P;
+                    return [(x3 + P) % P, (y3 + P) % P];
+                } else {
+                    return null;
+                }
+            }
+            
+            const x_diff = (x2 - x1 + P) % P;
+            const y_diff = (y2 - y1 + P) % P;
+            const inv = modInverse(x_diff, P);
+            const s = (y_diff * inv) % P;
+            const s_squared = (s * s) % P;
+            const x3 = (s_squared - x1 - x2) % P;
+            const y3 = (s * (x1 - x3) - y1) % P;
+            return [(x3 + P) % P, (y3 + P) % P];
+        }
+
+        function pointMultiply(k, x, y) {
+            if (k === 0n) return null;
+            if (k === 1n) return [x, y];
+            
+            let result = null;
+            let addend = [x, y];
+            
+            while (k > 0n) {
+                if (k & 1n) {
+                    result = result ? pointAdd(result[0], result[1], addend[0], addend[1]) : addend;
+                }
+                if (k > 1n) {
+                    addend = pointAdd(addend[0], addend[1], addend[0], addend[1]);
+                }
+                k >>= 1n;
+            }
+            
+            return result;
+        }
+
+        function generateRandomPrivKey() {
+            const array = new Uint8Array(32);
+            crypto.getRandomValues(array);
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        function generateRandomPubKey() {
+            const privKey = generateRandomPrivKey();
+            const privBigInt = BigInt('0x' + privKey);
+            const pubPoint = pointMultiply(privBigInt, Gx, Gy);
+            if (!pubPoint) return generateRandomPubKey(); // retry if invalid
+            // Return x-only pubkey (no prefix)
+            return pubPoint[0].toString(16).padStart(64, '0');
+        }
+
+        // Bitcoin address encoding functions
+        function sha256(data) {
+            return crypto.subtle.digest('SHA-256', data);
+        }
+
+        function bech32mEncode(hrp, data) {
+            const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+            const BECH32M_CONST = 0x2bc830a3; // bech32m uses different constant than bech32
+            
+            function bech32Polymod(values) {
+                const GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+                let chk = 1;
+                for (const value of values) {
+                    const top = chk >>> 25;
+                    chk = (chk & 0x1ffffff) << 5 ^ value;
+                    for (let i = 0; i < 5; i++) {
+                        chk ^= ((top >>> i) & 1) ? GEN[i] : 0;
+                    }
+                }
+                return chk;
+            }
+            
+            function bech32CreateChecksum(hrp, data) {
+                const values = bech32HrpExpand(hrp).concat(data).concat([0, 0, 0, 0, 0, 0]);
+                const mod = bech32Polymod(values) ^ BECH32M_CONST;
+                const ret = [];
+                for (let p = 0; p < 6; p++) {
+                    ret.push((mod >>> (5 * (5 - p))) & 31);
+                }
+                return ret;
+            }
+            
+            function bech32HrpExpand(hrp) {
+                const ret = [];
+                for (let p = 0; p < hrp.length; p++) {
+                    ret.push(hrp.charCodeAt(p) >>> 5);
+                }
+                ret.push(0);
+                for (let p = 0; p < hrp.length; p++) {
+                    ret.push(hrp.charCodeAt(p) & 31);
+                }
+                return ret;
+            }
+            
+            const combined = data.concat(bech32CreateChecksum(hrp, data));
+            let ret = hrp + '1';
+            for (const d of combined) {
+                ret += CHARSET.charAt(d);
+            }
+            return ret;
+        }
+
+        function convertBits(data, fromBits, toBits, pad = true) {
+            let acc = 0;
+            let bits = 0;
+            const ret = [];
+            const maxv = (1 << toBits) - 1;
+            const maxAcc = (1 << (fromBits + toBits - 1)) - 1;
+            
+            for (const value of data) {
+                if (value < 0 || (value >> fromBits)) {
+                    return null;
+                }
+                acc = ((acc << fromBits) | value) & maxAcc;
+                bits += fromBits;
+                while (bits >= toBits) {
+                    bits -= toBits;
+                    ret.push((acc >> bits) & maxv);
+                }
+            }
+            
+            if (pad) {
+                if (bits) {
+                    ret.push((acc << (toBits - bits)) & maxv);
+                }
+            } else if (bits >= fromBits || ((acc << (toBits - bits)) & maxv)) {
+                return null;
+            }
+            
+            return ret;
+        }
+
+        function pubkeyToTaprootAddress(xOnlyPubkey, testnet = false) {
+            // Convert hex to bytes
+            const pubkeyBytes = [];
+            for (let i = 0; i < xOnlyPubkey.length; i += 2) {
+                pubkeyBytes.push(parseInt(xOnlyPubkey.substr(i, 2), 16));
+            }
+            
+            // Convert 32-byte pubkey to 5-bit groups for bech32m
+            const converted = convertBits(pubkeyBytes, 8, 5);
+            if (!converted) return null;
+            
+            // Taproot: witness version 1, followed by converted pubkey
+            const data = [1].concat(converted);
+            
+            const hrp = testnet ? 'tb' : 'bc';
+            return bech32mEncode(hrp, data);
+        }
+
+        function toggleKeyInput() {
+            const usePrivate = document.getElementById('usePrivateKey').checked;
+            const pubkeyInput = document.getElementById('pubkey');
+            const privkeyInput = document.getElementById('privkey');
+            const label = document.querySelector('label[for="pubkey"]');
+            
+            if (usePrivate) {
+                pubkeyInput.style.display = 'none';
+                privkeyInput.style.display = 'block';
+                label.textContent = 'Starting Private Key (64 hex chars):';
+                label.setAttribute('for', 'privkey');
+            } else {
+                pubkeyInput.style.display = 'block';
+                privkeyInput.style.display = 'none';
+                label.textContent = 'Starting Public Key (64 hex chars):';
+                label.setAttribute('for', 'pubkey');
+            }
+        }
+
+        // Add event listener for toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('usePrivateKey').addEventListener('change', toggleKeyInput);
+        });
+
+        async function getNostrPubkey() {
+            try {
+                if (!window.nostr) {
+                    alert('No Nostr extension found. Please install a Nostr browser extension like Alby, nos2x, or Flamingo.');
+                    return;
+                }
+                
+                updateStatus('Getting public key from Nostr extension...');
+                const pubkey = await window.nostr.getPublicKey();
+                
+                if (pubkey && /^[0-9a-fA-F]{64}$/.test(pubkey)) {
+                    document.getElementById('pubkey').value = pubkey;
+                    updateStatus(`✅ Got Nostr public key: ${pubkey.slice(0, 16)}...`);
+                } else {
+                    updateStatus('❌ Invalid public key format from Nostr extension');
+                }
+            } catch (error) {
+                console.error('Nostr extension error:', error);
+                if (error.message.includes('denied') || error.message.includes('rejected')) {
+                    updateStatus('❌ Permission denied by Nostr extension');
+                } else {
+                    updateStatus('❌ Error getting key from Nostr extension: ' + error.message);
+                }
+            }
+        }
+
+        function updateStatus(message) {
+            const status = document.getElementById('status');
+            status.innerHTML += new Date().toLocaleTimeString() + ': ' + message + '<br>';
+            status.scrollTop = status.scrollHeight;
+        }
+
+        function updateMetrics() {
+            if (!isRunning) return;
+            
+            const elapsed = (Date.now() - startTime) / 1000;
+            const rate = elapsed > 0 ? Math.round(totalAttempts / elapsed) : 0;
+            const customPattern = document.getElementById('customPattern').value.trim();
+            const pattern = customPattern || document.getElementById('pattern').value;
+            const patternInfo = getPatternInfo(pattern);
+            const expected = patternInfo.valid ? patternInfo.expectedAttempts : 1;
+            const progress = Math.min((totalAttempts / expected) * 100, 100);
+            
+            document.getElementById('attempts').textContent = totalAttempts.toLocaleString();
+            document.getElementById('rate').textContent = rate.toLocaleString();
+            document.getElementById('elapsed').textContent = elapsed.toFixed(1) + 's';
+            document.getElementById('expected').textContent = expected.toLocaleString() + ' (' + patternInfo.difficulty + ')';
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function createWorkerStatus() {
+            const workerCount = parseInt(document.getElementById('workers').value);
+            const container = document.getElementById('workerStatus');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < workerCount; i++) {
+                const div = document.createElement('div');
+                div.className = 'worker';
+                div.id = `worker-${i}`;
+                div.textContent = `W${i}: idle`;
+                container.appendChild(div);
+            }
+        }
+
+        async function startGeneration() {
+            const usePrivate = document.getElementById('usePrivateKey').checked;
+            const customPattern = document.getElementById('customPattern').value.trim();
+            const pattern = customPattern || document.getElementById('pattern').value;
+            const workerCount = parseInt(document.getElementById('workers').value);
+            
+            // Validate pattern
+            const patternInfo = getPatternInfo(pattern);
+            if (!patternInfo.valid) {
+                alert('Pattern must contain only hexadecimal characters (0-9, a-f)');
+                return;
+            }
+            
+            if (patternInfo.expectedAttempts > 100000000) {
+                if (!confirm(`This pattern "${pattern}" is ${patternInfo.difficulty} and may take a very long time (expected ${patternInfo.expectedAttempts.toLocaleString()} attempts). Continue?`)) {
+                    return;
+                }
+            }
+            
+            let startPubPoint;
+            
+            if (usePrivate) {
+                // Private key mode
+                const privKeyInput = document.getElementById('privkey').value.trim();
+                
+                if (!privKeyInput) {
+                    const randomKey = generateRandomPrivKey();
+                    document.getElementById('privkey').value = randomKey;
+                    updateStatus(`Generated random private key: ${randomKey}`);
+                    return startGeneration();
+                }
+                
+                if (!/^[0-9a-fA-F]{64}$/.test(privKeyInput)) {
+                    alert('Private key must be exactly 64 hexadecimal characters');
+                    return;
+                }
+                
+                // Convert private key to public key
+                const privBigInt = BigInt('0x' + privKeyInput);
+                startPubPoint = pointMultiply(privBigInt, Gx, Gy);
+                if (!startPubPoint) {
+                    alert('Invalid private key');
+                    return;
+                }
+            } else {
+                // Public key mode (default)
+                const pubKeyInput = document.getElementById('pubkey').value.trim();
+                
+                if (!pubKeyInput) {
+                    const randomPubKey = generateRandomPubKey();
+                    document.getElementById('pubkey').value = randomPubKey;
+                    updateStatus(`Generated random public key: ${randomPubKey}`);
+                    return startGeneration();
+                }
+                
+                if (!/^[0-9a-fA-F]{64}$/.test(pubKeyInput)) {
+                    alert('Public key must be exactly 64 hexadecimal characters (x-only)');
+                    return;
+                }
+                
+                // Parse x-only public key
+                const xCoord = BigInt('0x' + pubKeyInput);
+                
+                // Recover y coordinate from x (use even y by default for x-only)
+                const ySquared = (xCoord * xCoord * xCoord + 7n) % P;
+                let y = modPow(ySquared, (P + 1n) / 4n, P);
+                
+                // Always use even y for x-only (Taproot/Nostr convention)
+                if (y % 2n !== 0n) {
+                    y = P - y;
+                }
+                
+                startPubPoint = [xCoord, y];
+            }
+            
+            // Reset state
+            totalAttempts = 0;
+            isRunning = true;
+            startTime = Date.now();
+            workers = [];
+            
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('status').innerHTML = '';
+            
+            createWorkerStatus();
+            updateStatus(`Starting generation with ${workerCount} workers (pattern: "${pattern}")...`);
+            updateStatus(`Difficulty: ${patternInfo.difficulty} (expected ${patternInfo.expectedAttempts.toLocaleString()} attempts)`);
+            
+            if (workerCount === 1) {
+                // Single-threaded mode
+                generateSingleThreaded(startPubPoint, pattern, usePrivate);
+            } else {
+                // Multi-threaded mode with Web Workers
+                generateMultiThreaded(startPubPoint, pattern, workerCount, usePrivate);
+            }
+            
+            updateInterval = setInterval(updateMetrics, 100);
+        }
+
+        function generateSingleThreaded(startPubPoint, pattern, usePrivate) {
+            let currentPubPoint = [startPubPoint[0], startPubPoint[1]];
+            
+            let attempts = 0;
+            let offset = 0n;
+            const G = [Gx, Gy];
+            
+            const searchLoop = () => {
+                const batchSize = 10000; // Process in batches to keep UI responsive
+                
+                for (let i = 0; i < batchSize && isRunning; i++) {
+                    attempts++;
+                    offset++;
+                    
+                    currentPubPoint = pointAdd(currentPubPoint[0], currentPubPoint[1], G[0], G[1]);
+                    
+                    // Check if current public key matches pattern
+                    const isEven = currentPubPoint[1] % 2n === 0n;
+                    const compressedPubKey = (isEven ? '02' : '03') + currentPubPoint[0].toString(16).padStart(64, '0');
+                    const xOnlyPubKey = currentPubPoint[0].toString(16).padStart(64, '0');
+                    
+                    if (doesPatternMatch(xOnlyPubKey, pattern)) {
+                        let result;
+                        if (usePrivate) {
+                            // In private key mode, calculate the final private key
+                            const startPrivKey = document.getElementById('privkey').value.trim();
+                            const startPrivBigInt = BigInt('0x' + startPrivKey);
+                            result = ((startPrivBigInt + offset) % N).toString(16).padStart(64, '0');
+                        } else {
+                            // In public key mode, just return the offset
+                            result = offset.toString();
+                        }
+                        
+                        foundResult(result, xOnlyPubKey, attempts, usePrivate);
+                        return;
+                    }
+                }
+                
+                totalAttempts = attempts;
+                
+                if (isRunning) {
+                    setTimeout(searchLoop, 1); // Continue search
+                }
+            };
+            
+            searchLoop();
+        }
+
+        function generateMultiThreaded(startPubPoint, pattern, workerCount, usePrivate) {
+            
+            // Create Web Workers (inline worker code)
+            for (let i = 0; i < workerCount; i++) {
+                const workerCode = createWorkerCode();
+                const blob = new Blob([workerCode], { type: 'application/javascript' });
+                const worker = new Worker(URL.createObjectURL(blob));
+                
+                worker.onmessage = (e) => {
+                    const { type, workerId, attempts, offset, pubKey } = e.data;
+                    
+                    if (type === 'found') {
+                        const pubPoint = [BigInt(pubKey[0]), BigInt(pubKey[1])];
+                        const xOnlyPubKey = pubPoint[0].toString(16).padStart(64, '0');
+                        
+                        let result;
+                        if (usePrivate) {
+                            // In private key mode, calculate the final private key
+                            const startPrivKey = document.getElementById('privkey').value.trim();
+                            const startPrivBigInt = BigInt('0x' + startPrivKey);
+                            result = ((startPrivBigInt + BigInt(offset)) % N).toString(16).padStart(64, '0');
+                        } else {
+                            // In public key mode, just return the offset
+                            result = offset.toString();
+                        }
+                        
+                        foundResult(result, xOnlyPubKey, totalAttempts + attempts, usePrivate);
+                    } else if (type === 'progress') {
+                        totalAttempts += attempts;
+                        document.getElementById(`worker-${workerId}`).textContent = `W${workerId}: ${attempts.toLocaleString()}`;
+                        document.getElementById(`worker-${workerId}`).className = 'worker active';
+                    }
+                };
+                
+                // Start worker
+                worker.postMessage({
+                    startPubPoint: [startPubPoint[0].toString(), startPubPoint[1].toString()],
+                    pattern: pattern,
+                    workerOffset: i,
+                    totalWorkers: workerCount
+                });
+                
+                workers.push(worker);
+            }
+        }
+
+        function createWorkerCode() {
+            return `
+                const P = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2Fn;
+                const N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141n;
+                const Gx = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798n;
+                const Gy = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8n;
+
+                function doesPatternMatch(hexString, pattern) {
+                    return hexString.toLowerCase().startsWith(pattern.toLowerCase());
+                }
+
+                function modInverse(a, m) {
+                    if (a < 0n) a = (a % m + m) % m;
+                    let [old_r, r] = [a, m];
+                    let [old_s, s] = [1n, 0n];
+                    
+                    while (r !== 0n) {
+                        const quotient = old_r / r;
+                        [old_r, r] = [r, old_r - quotient * r];
+                        [old_s, s] = [s, old_s - quotient * s];
+                    }
+                    
+                    return old_s < 0n ? old_s + m : old_s;
+                }
+
+                function pointAdd(x1, y1, x2, y2) {
+                    if (x1 === x2) {
+                        if (y1 === y2) {
+                            const y1_doubled = (y1 << 1n) % P;
+                            const inv = modInverse(y1_doubled, P);
+                            const x1_squared = (x1 * x1) % P;
+                            const s = (((x1_squared << 1n) + x1_squared) * inv) % P;
+                            const s_squared = (s * s) % P;
+                            const x3 = (s_squared - (x1 << 1n)) % P;
+                            const y3 = (s * (x1 - x3) - y1) % P;
+                            return [(x3 + P) % P, (y3 + P) % P];
+                        } else {
+                            return null;
+                        }
+                    }
+                    
+                    const x_diff = (x2 - x1 + P) % P;
+                    const y_diff = (y2 - y1 + P) % P;
+                    const inv = modInverse(x_diff, P);
+                    const s = (y_diff * inv) % P;
+                    const s_squared = (s * s) % P;
+                    const x3 = (s_squared - x1 - x2) % P;
+                    const y3 = (s * (x1 - x3) - y1) % P;
+                    return [(x3 + P) % P, (y3 + P) % P];
+                }
+
+                self.onmessage = function(e) {
+                    const { startPubPoint, pattern, workerOffset, totalWorkers } = e.data;
+                    
+                    const G = [Gx, Gy];
+                    
+                    let currentPubPoint = [BigInt(startPubPoint[0]), BigInt(startPubPoint[1])];
+                    
+                    // OPTIMAL STRATEGY: Each worker starts from small offset, then searches every Nth key
+                    // Worker 0: 0, 4, 8, 12, 16...  
+                    // Worker 1: 1, 5, 9, 13, 17...
+                    // Worker 2: 2, 6, 10, 14, 18...
+                    // Worker 3: 3, 7, 11, 15, 19...
+                    
+                    // Start each worker from small offset (cheap initialization)
+                    for (let i = 0; i < workerOffset; i++) {
+                        currentPubPoint = pointAdd(currentPubPoint[0], currentPubPoint[1], G[0], G[1]);
+                    }
+                    
+                    // Pre-compute the "big jump" for this worker (totalWorkers * G)
+                    let jumpPoint = [Gx, Gy];
+                    for (let i = 1; i < totalWorkers; i++) {
+                        jumpPoint = pointAdd(jumpPoint[0], jumpPoint[1], G[0], G[1]);
+                    }
+                    
+                    let attempts = 0;
+                    let localOffset = workerOffset;
+                    
+                    while (true) {
+                        // Check if current public key matches pattern (x-only format)
+                        const xOnlyPubKey = currentPubPoint[0].toString(16).padStart(64, '0');
+                        
+                        if (doesPatternMatch(xOnlyPubKey, pattern)) {
+                            self.postMessage({
+                                type: 'found',
+                                workerId: workerOffset,
+                                offset: localOffset,
+                                pubKey: [currentPubPoint[0].toString(), currentPubPoint[1].toString()],
+                                attempts: attempts
+                            });
+                            break;
+                        }
+                        
+                        attempts++;
+                        localOffset += totalWorkers;
+                        
+                        // Jump by totalWorkers keys (one big addition instead of many small ones)
+                        currentPubPoint = pointAdd(currentPubPoint[0], currentPubPoint[1], jumpPoint[0], jumpPoint[1]);
+                        
+                        if (attempts % 100000 === 0) {
+                            self.postMessage({
+                                type: 'progress',
+                                workerId: workerOffset,
+                                attempts: 100000
+                            });
+                            attempts = 0; // Reset for next batch
+                        }
+                    }
+                };
+            `;
+        }
+
+        function foundResult(keyOrOffset, publicKey, attempts, usePrivate) {
+            isRunning = false;
+            clearInterval(updateInterval);
+            
+            const elapsed = (Date.now() - startTime) / 1000;
+            
+            if (usePrivate) {
+                document.getElementById('resultPrivKey').textContent = keyOrOffset;
+                document.getElementById('resultLabel').textContent = 'Private Key:';
+            } else {
+                document.getElementById('resultPrivKey').textContent = keyOrOffset;
+                document.getElementById('resultLabel').textContent = 'Offset:';
+            }
+            
+            document.getElementById('resultPubKey').textContent = publicKey;
+            
+            // Generate Bitcoin Taproot addresses and explorer links
+            const mainnetAddress = pubkeyToTaprootAddress(publicKey, false);
+            const testnetAddress = pubkeyToTaprootAddress(publicKey, true);
+            
+            if (mainnetAddress && testnetAddress) {
+                const mainnetLink = document.getElementById('mainnetLink');
+                const testnetLink = document.getElementById('testnetLink');
+                
+                mainnetLink.innerHTML = `🔗 ${mainnetAddress}`;
+                mainnetLink.href = `https://mempool.space/address/${mainnetAddress}`;
+                mainnetLink.title = `View on mempool.space: ${mainnetAddress}`;
+                
+                testnetLink.innerHTML = `🔗 ${testnetAddress}`;
+                testnetLink.href = `https://mempool.space/testnet4/address/${testnetAddress}`;
+                testnetLink.title = `View on testnet4 explorer: ${testnetAddress}`;
+            }
+            
+            document.getElementById('resultAttempts').textContent = attempts.toLocaleString();
+            document.getElementById('resultTime').textContent = elapsed.toFixed(2) + 's';
+            document.getElementById('result').style.display = 'block';
+            
+            updateStatus(`🎉 FOUND! Attempts: ${attempts.toLocaleString()}, Time: ${elapsed.toFixed(2)}s, Rate: ${Math.round(attempts/elapsed).toLocaleString()} ops/sec`);
+            
+            stopGeneration();
+        }
+
+        function stopGeneration() {
+            isRunning = false;
+            clearInterval(updateInterval);
+            
+            workers.forEach(worker => worker.terminate());
+            workers = [];
+            
+            document.getElementById('generateBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            
+            // Reset worker status
+            const workerElements = document.querySelectorAll('.worker');
+            workerElements.forEach(el => {
+                el.className = 'worker';
+                el.textContent = el.id.replace('worker-', 'W') + ': stopped';
+            });
+            
+            updateStatus('Generation stopped.');
+        }
+
+        // Initialize with random public key on load
+        window.onload = function() {
+            document.getElementById('pubkey').value = generateRandomPubKey();
+            createWorkerStatus();
+        };
+    </script>
+</body>
+</html>
