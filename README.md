@@ -25,6 +25,7 @@ Generate nostr keys from command line
 &nbsp;&nbsp;✓&nbsp; Generate Private Key  
 &nbsp;&nbsp;✓&nbsp; Generate nsec Private Key  
 &nbsp;&nbsp;✓&nbsp; Generate Public Key  
+&nbsp;&nbsp;✓&nbsp; Generate DID Nostr identifier  
 &nbsp;&nbsp;✓&nbsp; Generate compressed Public Key  
 &nbsp;&nbsp;✓&nbsp; Generate bitcoin address  
 &nbsp;&nbsp;✓&nbsp; Generate bitcoin testnet3 address  
@@ -91,6 +92,7 @@ Options:
   "privkey": "096267c08957fe0a83399d3e6be45fb283aefed6487fac55350d828142362f68",
   "nsec": "nsec1p93x0syf2llq4qeen5lxhezlk2p6alkkfpl6c4f4pkpgzs3k9a5qs7nk3j",
   "pubkey": "3104afd3bc605665d1e92afdc33bb50d8d8c47293916374f45a965fc390a0333",
+  "didnostr": "did:nostr:3104afd3bc605665d1e92afdc33bb50d8d8c47293916374f45a965fc390a0333",
   "pubkeycompressed": "033104afd3bc605665d1e92afdc33bb50d8d8c47293916374f45a965fc390a0333",
   "bitcoinPubkey": "1LcHKWvoVW7ZXVtVf7cX3JS6hqvWNnphaB",
   "bitcoinTestnet3Pubkey": "n18Eca1nJXYpJcN7NgatsDeRZqXDJ8EwFD",
