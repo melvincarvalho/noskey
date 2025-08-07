@@ -6,7 +6,7 @@
 import { ECPairFactory } from 'ecpair'
 import * as secp256k1 from '@noble/secp256k1'
 // import { bech32 } from '@scure/base'
-import nacl from 'tweetnacl'
+import ed25519 from 'ed25519'
 import { bech32, bech32m } from 'bech32'
 // import * as tiny from 'tiny-secp256k1'
 
@@ -121,8 +121,7 @@ const hexToBuffer = hex => Buffer.from(hex, 'hex')
  * @returns {string} The generated public key in hexadecimal format
  */
 function generate_public_key(privKey) {
-  const keyPair = nacl.sign.keyPair.fromSeed(hexToBuffer(privKey))
-  return Buffer.from(keyPair.publicKey).toString('hex')
+  return ed25519.MakeKeypair(hexToBuffer(privKey)).publicKey.toString('hex')
 }
 
 /**
@@ -323,8 +322,7 @@ function splitLongStrings(str) {
 function encodePEM(keys) {
   // Use the original format but fix the private key to be 32 bytes instead of 64
   // Keep hardcoded check bytes and structure for compatibility with decodePEM
-  // Fixed: private section length should be 0x98 (152 bytes) not 0x90 (144 bytes)
-  const pem = `6f70656e7373682d6b65792d763100000000046e6f6e65000000046e6f6e650000000000000001000000330000000b7373682d6564323535313900000020${keys.publicKey}000000980ac771850ac771850000000b7373682d6564323535313900000020${keys.publicKey}00000020${keys.privateKey}${keys.publicKey}000000126d656c76696e406d656c76696e2d504e3632010203`
+  const pem = `6f70656e7373682d6b65792d763100000000046e6f6e65000000046e6f6e650000000000000001000000330000000b7373682d6564323535313900000020${keys.publicKey}000000900ac771850ac771850000000b7373682d6564323535313900000020${keys.publicKey}00000020${keys.privateKey}${keys.publicKey}000000126d656c76696e406d656c76696e2d504e3632010203`
 
   return `${BEGIN}${splitLongStrings(hexToBase64(pem))}
 ${END}`
@@ -370,8 +368,8 @@ function getAllKeys(privateKey) {
   // let wifTestnet = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: TESTNET })
 
   // console.log(keyPair.publicKey)
-  const ed25519Keypair = nacl.sign.keyPair.fromSeed(hexToBuffer(privateKey))
-  const ed25519pubkey = Buffer.from(ed25519Keypair.publicKey).toString('hex')
+  const ed25519Keypair = ed25519.MakeKeypair(hexToBuffer(privateKey))
+  const ed25519pubkey = ed25519Keypair.publicKey.toString('hex')
   // For OpenSSH, use the original 32-byte private key as the Ed25519 seed
   const ed25519seed = privateKey
   // const p = tiny.pointFromScalar(Buffer.from(privateKey, 'hex'))

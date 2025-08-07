@@ -6,7 +6,7 @@
 import { ECPairFactory } from 'ecpair'
 import * as secp256k1 from '@noble/secp256k1'
 // import { bech32 } from '@scure/base'
-import nacl from 'tweetnacl'
+import ed25519 from 'ed25519'
 import { bech32, bech32m } from 'bech32'
 // import * as tiny from 'tiny-secp256k1'
 
@@ -121,8 +121,7 @@ const hexToBuffer = hex => Buffer.from(hex, 'hex')
  * @returns {string} The generated public key in hexadecimal format
  */
 function generate_public_key(privKey) {
-  const keyPair = nacl.sign.keyPair.fromSeed(hexToBuffer(privKey))
-  return Buffer.from(keyPair.publicKey).toString('hex')
+  return ed25519.MakeKeypair(hexToBuffer(privKey)).publicKey.toString('hex')
 }
 
 /**
@@ -370,8 +369,8 @@ function getAllKeys(privateKey) {
   // let wifTestnet = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: TESTNET })
 
   // console.log(keyPair.publicKey)
-  const ed25519Keypair = nacl.sign.keyPair.fromSeed(hexToBuffer(privateKey))
-  const ed25519pubkey = Buffer.from(ed25519Keypair.publicKey).toString('hex')
+  const ed25519Keypair = ed25519.MakeKeypair(hexToBuffer(privateKey))
+  const ed25519pubkey = ed25519Keypair.publicKey.toString('hex')
   // For OpenSSH, use the original 32-byte private key as the Ed25519 seed
   const ed25519seed = privateKey
   // const p = tiny.pointFromScalar(Buffer.from(privateKey, 'hex'))

@@ -1,6 +1,6 @@
 {
   "name": "noskey",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "description": "generate nostr key",
   "main": "lib/index.js",
   "bin": {
@@ -31,7 +31,6 @@
     "bitcoinjs-lib": "^6.1.0",
     "chai": "^4.3.7",
     "ecpair": "^2.1.0",
-    "ed25519": "^0.0.5",
     "fs": "^0.0.1-security",
     "libsodium-wrappers": "^0.7.10",
     "mocha": "^10.2.0",
