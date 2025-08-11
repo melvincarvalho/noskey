@@ -7,6 +7,7 @@ const npubEl = document.getElementById("npub");
 const nsecEl = document.getElementById("nsec");
 const publicEl = document.getElementById("public");
 const privateEl = document.getElementById("private");
+const mnemonicEl = document.getElementById("mnemonic");
 const timeEl = document.getElementById("time");
 const counterEl = document.getElementById("counter");
 
@@ -22,9 +23,9 @@ function startWorker() {
       counterEl.innerHTML = e.data.counter;
     }
     if(e.data.npub) {
-      const { npub, nsec, publickey, privatekey, time } = e.data;
+      const { npub, nsec, publickey, privatekey, mnemonic, time } = e.data;
       stopWorker();
-      finishUp(npub, nsec, publickey, privatekey, time);
+      finishUp(npub, nsec, publickey, privatekey, mnemonic, time);
     }
   })
 }
@@ -79,15 +80,17 @@ function clear() {
   nsecEl.value =  '';
   publicEl.value = '';
   privateEl.value = '';
+  mnemonicEl.value = '';
   timeEl.innerHTML = '0';
 }
 
-function finishUp(npub, nsec, publickey, privatekey, time) {
+function finishUp(npub, nsec, publickey, privatekey, mnemonic, time) {
   progressEl.style="width: 0%";
   npubEl.value = npub;
   nsecEl.value =  nsec;
   publicEl.value = publickey;
   privateEl.value = privatekey;
+  mnemonicEl.value = mnemonic;
   timeEl.innerHTML = time;
 }
 
@@ -116,6 +119,12 @@ function copy(element) {
       privateEl.select();
       privateEl.setSelectionRange(0, 99999);
       navigator.clipboard.writeText(privateEl.value);
+      alert('copied!')
+      break;
+    case 'mnemonic':
+      mnemonicEl.select();
+      mnemonicEl.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(mnemonicEl.value);
       alert('copied!')
       break;       
   }
