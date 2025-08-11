@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-// Force explicit stdout flushing
-process.stdout.write('noskey starting...\n')
 
 // IMPORTS
 import { generatePrivateKey } from 'nostr-tools'
@@ -10,8 +8,6 @@ import {
 } from '../lib/index.js'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-
-console.log('noskey: imports loaded')
 
 // args
 const yarg = yargs(hideBin(process.argv))
@@ -42,8 +38,6 @@ const argv = yarg
 	.help('h')
 	.alias('h', 'help').argv
 
-console.log('noskey: args parsed')
-
 // INIT
 // console.log(argv)
 const vanity = argv.v || ''
@@ -52,15 +46,11 @@ const nsec = argv.s
 
 // If no specific key provided and no vanity requirements, just generate one key
 if (!nsec && !argv.p && !vanity && !npubvanity) {
-	console.log('noskey: generating single key')
 	const privateKey = generatePrivateKey()
-	console.log('noskey: calling getAllKeys')
 	const output = getAllKeys(privateKey)
 	console.log(JSON.stringify(output, null, 2))
 	process.exit(0)
 }
-
-console.log('noskey: entering vanity loop')
 
 // MAIN - for vanity generation or specific key processing
 while (true) {
