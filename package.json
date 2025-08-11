@@ -1,10 +1,10 @@
 {
   "name": "noskey",
-  "version": "0.0.60",
+  "version": "0.0.61",
   "description": "generate nostr key",
   "main": "lib/index.js",
   "bin": {
-    "noskey": "bin/noskey.js"
+    "noskey": "bin/noskey-cjs.js"
   },
   "type": "module",
   "files": [
