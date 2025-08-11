@@ -1,12 +1,17 @@
 {
   "name": "noskey",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "description": "generate nostr key",
   "main": "lib/index.js",
   "bin": {
     "noskey": "bin/noskey.js"
   },
   "type": "module",
+  "files": [
+    "bin/",
+    "lib/",
+    "words.json"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "node_modules/.bin/jsdoc -c jsdoc.json"
@@ -35,7 +40,6 @@
     "libsodium-wrappers": "^0.7.10",
     "mocha": "^10.2.0",
     "nacl": "^0.1.3",
-    "noskey": "^0.0.54",
     "nostr-tools": "^1.7.4",
     "tiny-secp256k1": "^2.2.1",
     "tweetnacl": "^1.0.3",

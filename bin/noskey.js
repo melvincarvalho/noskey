@@ -44,7 +44,15 @@ const vanity = argv.v || ''
 const npubvanity = argv.n || ''
 const nsec = argv.s
 
-// MAIN
+// If no specific key provided and no vanity requirements, just generate one key
+if (!nsec && !argv.p && !vanity && !npubvanity) {
+	const privateKey = generatePrivateKey()
+	const output = getAllKeys(privateKey)
+	console.log(JSON.stringify(output, null, 2))
+	process.exit(0)
+}
+
+// MAIN - for vanity generation or specific key processing
 while (true) {
 	var privateKey
 	if (nsec) {
@@ -59,7 +67,6 @@ while (true) {
 	const npub_prefix = 'npub1'
 	if (output.pubkey.startsWith(vanity) && output.npub.slice(npub_prefix.length).startsWith(npubvanity)) {
 		console.log(JSON.stringify(output, null, 2))
-
 		break
 	}
 }
