@@ -13,7 +13,7 @@
     "words.json"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test test/*.test.js",
     "docs": "node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "repository": {
