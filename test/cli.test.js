@@ -14,8 +14,8 @@ function runCLI(args = '') {
   try {
     result = execSync(command, { encoding: 'utf-8' })
   } catch (error) {
-    const stdout = error && error.stdout ? error.stdout.toString() : ''
-    const stderr = error && error.stderr ? error.stderr.toString() : ''
+    const stdout = error && error.stdout ? error.stdout : ''
+    const stderr = error && error.stderr ? error.stderr : ''
 
     assert.fail(
       [
