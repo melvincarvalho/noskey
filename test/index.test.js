@@ -7,7 +7,6 @@ import {
   bufferToHex,
   generate_public_key,
   hexToBase64,
-  encodePEM,
   decodePEM,
   getAllKeys,
   getPublicKey,

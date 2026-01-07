@@ -8,8 +8,38 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const CLI_PATH = join(__dirname, '..', 'bin', 'noskey.js')
 
 function runCLI(args = '') {
-  const result = execSync(`node ${CLI_PATH} ${args}`, { encoding: 'utf-8' })
-  return JSON.parse(result)
+  const command = `node ${CLI_PATH} ${args}`
+  let result
+
+  try {
+    result = execSync(command, { encoding: 'utf-8' })
+  } catch (error) {
+    const stdout = error && error.stdout ? error.stdout.toString() : ''
+    const stderr = error && error.stderr ? error.stderr.toString() : ''
+
+    assert.fail(
+      [
+        'CLI command failed.',
+        `Command: ${command}`,
+        stdout ? `STDOUT:\n${stdout}` : '',
+        stderr ? `STDERR:\n${stderr}` : '',
+        `Error: ${error.message}`
+      ].filter(Boolean).join('\n')
+    )
+  }
+
+  try {
+    return JSON.parse(result)
+  } catch (parseError) {
+    assert.fail(
+      [
+        'Failed to parse CLI JSON output.',
+        `Command: ${command}`,
+        `Output: ${result}`,
+        `Error: ${parseError.message}`
+      ].join('\n')
+    )
+  }
 }
 
 // Test vectors
