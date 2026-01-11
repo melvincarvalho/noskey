@@ -112,7 +112,7 @@ Options:
 
 Check out the documentation for noskey in the docs directory. There, you can find more detailed information about the features and usage of this tool.
 
-[Documenatation](https://melvincarvalho.github.io/noskey/docs/)
+[Documentation](https://melvincarvalho.github.io/noskey/docs/)
 
 ## ⚖️ License
 
