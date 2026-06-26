@@ -20,6 +20,8 @@ Generate nostr keys from command line
 [![npm](https://img.shields.io/npm/dw/noskey.svg)](https://npmjs.com/package/noskey)
 [![Github Stars](https://img.shields.io/github/stars/melvincarvalho/noskey.svg)](https://github.com/melvincarvalho/noskey/)
 
+<sub>🌐 No install? Try the [web version](https://melvincarvalho.github.io/noskey/web/) — same keys, generated locally in your browser.</sub>
+
 ## ⚡️ Features
 
 &nbsp;&nbsp;✓&nbsp; Generate Private Key  

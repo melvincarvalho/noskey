@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>noskey — every key from one click</title>
+<meta name="description" content="The noskey CLI in your browser. Generate nostr, bitcoin, taproot, ed25519 & SSH keys from one private key — 100% locally." />
+<style>
+  :root {
+    --bg: #f7f7fb;
+    --panel: #ffffff;
+    --ink: #15151b;
+    --muted: #6b6b7b;
+    --line: #e6e6ef;
+    --accent: #6d3bf5;
+    --accent-soft: #efe9ff;
+    --good: #14a06a;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+    --ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(20,20,40,.04), 0 8px 24px rgba(20,20,40,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e0e14; --panel: #16161f; --ink: #ecedf3; --muted: #9a9aae;
+      --line: #262633; --accent: #9b7bff; --accent-soft: #1e1933; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: var(--ui);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  header { text-align: center; margin-bottom: 28px; }
+  .logo {
+    font-family: var(--mono); font-weight: 700; font-size: 40px; letter-spacing: -1px;
+    margin: 0; display: inline-flex; align-items: center; gap: 10px;
+  }
+  .logo .blink { color: var(--accent); animation: blink 1.2s steps(2,start) infinite; }
+  @keyframes blink { to { opacity: 0; } }
+  .tagline { color: var(--muted); margin: 8px 0 0; font-size: 16px; }
+  .safe {
+    display: inline-flex; gap: 7px; align-items: center; margin-top: 14px;
+    font-size: 13px; color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent);
+    padding: 5px 12px; border-radius: 999px;
+  }
+
+  /* command bar */
+  .cmd {
+    font-family: var(--mono); font-size: 14px; color: var(--muted);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 14px; margin: 0 0 14px; overflow-x: auto; white-space: nowrap;
+  }
+  .cmd .sigil { color: var(--accent); user-select: none; }
+  .cmd b { color: var(--ink); font-weight: 600; }
+
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+  .controls input[type=text] {
+    flex: 1 1 320px; min-width: 0; font-family: var(--mono); font-size: 15px;
+    padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--panel); color: var(--ink); outline: none; transition: border-color .15s;
+  }
+  .controls input[type=text]:focus { border-color: var(--accent); }
+  button.primary {
+    flex: 0 0 auto; font-family: var(--ui); font-weight: 600; font-size: 15px;
+    padding: 0 24px; border: none; border-radius: 12px; cursor: pointer;
+    background: var(--accent); color: #fff; transition: transform .08s, filter .15s; min-height: 50px;
+  }
+  button.primary:hover { filter: brightness(1.08); }
+  button.primary:active { transform: scale(.98); }
+  button.primary:disabled { opacity: .55; cursor: default; }
+  .hint { color: var(--muted); font-size: 13px; margin: 10px 2px 0; }
+  .hint code { font-family: var(--mono); background: var(--accent-soft); color: var(--accent); padding: 1px 6px; border-radius: 5px; }
+
+  /* mining panel */
+  .miner { display: none; margin-top: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .miner.on { display: block; }
+  .miner-head { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .spinner { width: 16px; height: 16px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .stats { display: flex; gap: 26px; flex-wrap: wrap; margin: 12px 0; font-family: var(--mono); }
+  .stats .n { font-size: 22px; font-weight: 700; }
+  .stats .l { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  button.ghost { font-family: var(--ui); font-weight: 600; font-size: 14px; padding: 9px 16px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* results */
+  #results { margin-top: 26px; display: none; }
+  #results.on { display: block; animation: rise .35s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .toolbar .left { display: flex; gap: 10px; align-items: center; }
+  .group { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+  .group h3 { margin: 0; padding: 14px 18px; font-size: 13px; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
+  .field { display: grid; grid-template-columns: 150px 1fr auto; gap: 12px; align-items: center; padding: 11px 18px; border-bottom: 1px solid var(--line); }
+  .field:last-child { border-bottom: none; }
+  .field .k { font-size: 13px; color: var(--muted); }
+  .field .v { font-family: var(--mono); font-size: 13px; word-break: break-all; }
+  .field.secret .v { filter: blur(5px); cursor: pointer; transition: filter .12s; user-select: none; }
+  .field.secret.reveal .v { filter: none; user-select: text; }
+  .field .copy { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; cursor: pointer; padding: 6px 10px; font-size: 12px; font-family: var(--ui); white-space: nowrap; }
+  .field .copy:hover { border-color: var(--accent); color: var(--accent); }
+  .field .copy.done { color: var(--good); border-color: var(--good); }
+  pre.json { display: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; box-shadow: var(--shadow); }
+  pre.json.on { display: block; }
+  @media (max-width: 560px) { .field { grid-template-columns: 1fr auto; } .field .k { grid-column: 1 / -1; } }
+
+  .err { display:none; background: #fde8e8; color: #9b1c1c; border-radius: var(--radius); padding: 16px 18px; margin-top: 18px; font-size: 14px; }
+  @media (prefers-color-scheme: dark) { .err { background: #3a1414; color: #ffb4b4; } }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 40px; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 class="logo">noskey<span class="blink">_</span></h1>
+    <p class="tagline">the noskey CLI, in your browser — every key from one private key.</p>
+    <span class="safe">🔒 Generated entirely on your device. Nothing is ever sent anywhere.</span>
+  </header>
+
+  <div class="cmd" id="cmd"><span class="sigil">$</span> noskey</div>
+
+  <div class="controls">
+    <input type="text" id="input" autocomplete="off" autocapitalize="off" spellcheck="false"
+      placeholder="empty = random  ·  or a privkey / nsec / vanity prefix" />
+    <button class="primary" id="go" disabled>Loading…</button>
+  </div>
+  <p class="hint">Leave it empty and hit <b>Generate</b> for a fresh random key. Or paste a 64-char hex
+    <code>privkey</code>, an <code>nsec1…</code>, or type a short prefix (e.g. <code>sat</code>) to mine a vanity npub.</p>
+
+  <div class="miner" id="miner">
+    <div class="miner-head"><span class="spinner"></span> Mining for <code id="miner-target"></code>…</div>
+    <div class="stats">
+      <div><div class="n" id="m-tried">0</div><div class="l">keys tried</div></div>
+      <div><div class="n" id="m-rate">0</div><div class="l">keys / sec</div></div>
+      <div><div class="n" id="m-time">0.0s</div><div class="l">elapsed</div></div>
+      <div><div class="n" id="m-workers">0</div><div class="l">workers</div></div>
+    </div>
+    <button class="ghost" id="stop">Stop</button>
+  </div>
+
+  <div class="err" id="err"></div>
+
+  <div id="results">
+    <div class="toolbar">
+      <div class="left">
+        <button class="ghost" id="reveal">👁 Reveal secrets</button>
+        <button class="ghost" id="toggle-json">{ } View raw JSON</button>
+      </div>
+      <button class="ghost" id="copy-json">Copy all as JSON</button>
+    </div>
+    <div id="groups"></div>
+    <pre class="json" id="json"></pre>
+  </div>
+
+  <footer>
+    Faithful port of the <a href="https://github.com/melvincarvalho/noskey">noskey</a> CLI · output verified
+    byte-identical · MIT licensed.<br/>For maximum safety, disconnect from the internet before generating keys you intend to keep.
+  </footer>
+</div>
+
+<script type="module">
+import { noskey } from "./assets/noskey.js";
+
+// ---- field layout ----------------------------------------------------------
+const SECRET = new Set(["nsec", "privkey", "mnemonic", "bip86_tprv", "openSSHed25519privkey"]);
+const GROUPS = [
+  { title: "🟣 Nostr", fields: [
+    ["pubkey", "public key (hex)"], ["npub", "npub"], ["didnostr", "did:nostr"], ["nrepo", "nrepo"],
+  ]},
+  { title: "🔑 Secrets", fields: [
+    ["privkey", "private key (hex)"], ["nsec", "nsec"], ["mnemonic", "BIP39 mnemonic"],
+  ]},
+  { title: "₿ Bitcoin · Taproot", fields: [
+    ["pubkeycompressed", "compressed pubkey"], ["taproot", "taproot (bc)"], ["taproottestnet", "taproot testnet (tb)"],
+    ["liquidtaproot", "liquid (ex)"], ["litecointaproot", "litecoin (ltc)"], ["vertcointaproot", "vertcoin (vtc)"],
+    ["bip86_tpub", "BIP86 tpub"], ["bip86_tprv", "BIP86 tprv"], ["bip86_p2tr", "BIP86 P2TR address"],
+  ]},
+  { title: "🔐 SSH · ed25519", fields: [
+    ["ed25519pubkey", "ed25519 pubkey"], ["pubky", "pubky (z-base32)"],
+    ["openSSHed25519pubkey", "OpenSSH public key"], ["openSSHed25519privkey", "OpenSSH private key"],
+  ]},
+];
+const BECH32_CHARS = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+
+const $ = (id) => document.getElementById(id);
+const inputEl = $("input"), goEl = $("go"), cmdEl = $("cmd"), errEl = $("err");
+const resultsEl = $("results"), groupsEl = $("groups"), jsonEl = $("json");
+const fieldEls = {};
+
+// Build the static result DOM once; values get filled per-generation.
+for (const g of GROUPS) {
+  const sec = document.createElement("div"); sec.className = "group";
+  sec.innerHTML = `<h3>${g.title}</h3>`;
+  for (const [key, label] of g.fields) {
+    const row = document.createElement("div");
+    row.className = "field" + (SECRET.has(key) ? " secret" : "");
+    row.innerHTML = `<div class="k">${label}</div><div class="v"></div><button class="copy">Copy</button>`;
+    const v = row.querySelector(".v"), btn = row.querySelector(".copy");
+    fieldEls[key] = v;
+    btn.addEventListener("click", () => copy(v.dataset.full || v.textContent, btn));
+    if (SECRET.has(key)) v.addEventListener("click", () => row.classList.add("reveal"));
+    sec.appendChild(row);
+  }
+  groupsEl.appendChild(sec);
+}
+
+async function copy(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+    if (btn) { const o = btn.textContent; btn.textContent = "Copied ✓"; btn.classList.add("done");
+      setTimeout(() => { btn.textContent = o; btn.classList.remove("done"); }, 1100); }
+  } catch { /* clipboard blocked */ }
+}
+
+function render(keys, command) {
+  cmdEl.innerHTML = `<span class="sigil">$</span> ${command}`;
+  for (const k in fieldEls) {
+    const val = keys[k] ?? "";
+    const v = fieldEls[k];
+    v.dataset.full = val;
+    v.textContent = val.length > 200 ? val.slice(0, 120) + "…  (" + val.length + " chars)" : val;
+    v.closest(".field").classList.remove("reveal");
+  }
+  jsonEl.textContent = JSON.stringify(keys, null, 2);
+  resultsEl.classList.add("on");
+  lastKeys = keys;
+}
+let lastKeys = null;
+
+function showErr(msg) { errEl.textContent = msg; errEl.style.display = "block"; }
+function clearErr() { errEl.style.display = "none"; }
+
+// ---- input detection -------------------------------------------------------
+function classify(raw) {
+  const s = raw.trim();
+  if (!s) return { mode: "random" };
+  if (/^[0-9a-fA-F]{64}$/.test(s)) return { mode: "priv", value: s.toLowerCase() };
+  if (/^nsec1[0-9a-z]+$/.test(s)) return { mode: "nsec", value: s };
+  return { mode: "vanity", value: s.toLowerCase() };
+}
+
+function generateFrom(cls) {
+  clearErr();
+  try {
+    if (cls.mode === "random") {
+      const p = noskey.generatePrivateKey();
+      render(noskey.getAllKeys(p), "noskey");
+    } else if (cls.mode === "priv") {
+      render(noskey.getAllKeys(cls.value), `noskey -p ${short(cls.value)}`);
+    } else if (cls.mode === "nsec") {
+      const p = noskey.nsecToHex(cls.value);
+      render(noskey.getAllKeys(p), `noskey -s ${short(cls.value)}`);
+    }
+  } catch (e) {
+    showErr("Couldn't derive keys from that input: " + e.message);
+  }
+}
+const short = (s) => s.length > 14 ? s.slice(0, 10) + "…" : s;
+
+// ---- vanity mining ---------------------------------------------------------
+let workers = [], mining = false, tried = 0, mineStart = 0, rateTimer = null, lastTick = 0, lastTried = 0;
+const miner = $("miner");
+
+function startMining(prefix) {
+  const bad = [...prefix].filter((c) => !BECH32_CHARS.includes(c));
+  if (bad.length) { showErr(`A vanity npub can't contain: ${[...new Set(bad)].join(" ")} (bech32 excludes b, i, o, 1).`); return; }
+  clearErr();
+  stopMining();
+  mining = true; tried = 0; lastTried = 0; mineStart = performance.now(); lastTick = mineStart;
+  $("miner-target").textContent = "npub1" + prefix;
+  miner.classList.add("on");
+  cmdEl.innerHTML = `<span class="sigil">$</span> noskey --vanity <b>${prefix}</b>`;
+
+  const n = Math.min(navigator.hardwareConcurrency || 4, 8);
+  $("m-workers").textContent = n;
+  for (let i = 0; i < n; i++) {
+    const w = new Worker("./assets/vanity-worker.js", { type: "module" });
+    w.onmessage = (e) => {
+      if (e.data.type === "progress") { tried += e.data.count; }
+      else if (e.data.type === "found") {
+        tried += e.data.count;
+        const elapsed = ((performance.now() - mineStart) / 1000).toFixed(1);
+        stopMining();
+        render(e.data.keys, `noskey --vanity ${prefix}   # ${tried.toLocaleString()} tries · ${elapsed}s`);
+      }
+    };
+    w.postMessage({ cmd: "start", prefix });
+    workers.push(w);
+  }
+  rateTimer = setInterval(() => {
+    const now = performance.now();
+    const rate = Math.round((tried - lastTried) / ((now - lastTick) / 1000));
+    lastTick = now; lastTried = tried;
+    $("m-tried").textContent = tried.toLocaleString();
+    $("m-rate").textContent = (rate || 0).toLocaleString();
+    $("m-time").textContent = ((now - mineStart) / 1000).toFixed(1) + "s";
+  }, 250);
+}
+
+function stopMining() {
+  mining = false;
+  workers.forEach((w) => w.terminate());
+  workers = [];
+  clearInterval(rateTimer);
+  miner.classList.remove("on");
+}
+
+// ---- wiring ----------------------------------------------------------------
+function run() {
+  const cls = classify(inputEl.value);
+  if (cls.mode === "vanity") startMining(cls.value);
+  else { stopMining(); generateFrom(cls); }
+}
+goEl.addEventListener("click", run);
+inputEl.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
+inputEl.addEventListener("input", () => {
+  const m = classify(inputEl.value).mode;
+  goEl.textContent = m === "vanity" ? "Mine ⛏" : m === "random" ? "Generate" : "Derive";
+});
+$("stop").addEventListener("click", stopMining);
+$("reveal").addEventListener("click", () => {
+  document.querySelectorAll(".field.secret").forEach((f) => f.classList.toggle("reveal"));
+});
+$("toggle-json").addEventListener("click", () => jsonEl.classList.toggle("on"));
+$("copy-json").addEventListener("click", (e) => { if (lastKeys) copy(JSON.stringify(lastKeys, null, 2), e.target); });
+
+// boot
+goEl.disabled = false; goEl.textContent = "Generate";
+generateFrom({ mode: "random" });
+</script>
+</body>
+</html>
