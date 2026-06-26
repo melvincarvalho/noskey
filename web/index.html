@@ -170,13 +170,14 @@
 import { noskey } from "./assets/noskey.js";
 
 // ---- field layout ----------------------------------------------------------
-const SECRET = new Set(["nsec", "privkey", "mnemonic", "bip86_tprv", "openSSHed25519privkey"]);
+const SECRET = new Set(["nsec", "privkey", "mnemonic", "mnemonic12", "bip86_tprv", "openSSHed25519privkey"]);
 const GROUPS = [
   { title: "🟣 Nostr", fields: [
     ["pubkey", "public key (hex)"], ["npub", "npub"], ["didnostr", "did:nostr"], ["nrepo", "nrepo"],
   ]},
   { title: "🔑 Secrets", fields: [
-    ["privkey", "private key (hex)"], ["nsec", "nsec"], ["mnemonic", "BIP39 mnemonic"],
+    ["privkey", "private key (hex)"], ["nsec", "nsec"],
+    ["mnemonic", "BIP39 mnemonic (24w)"], ["mnemonic12", "12-word phrase (first 128 bits)"],
   ]},
   { title: "₿ Bitcoin · Taproot", fields: [
     ["pubkeycompressed", "compressed pubkey"], ["taproot", "taproot (bc)"], ["taproottestnet", "taproot testnet (tb)"],
@@ -222,8 +223,10 @@ async function copy(text, btn) {
 
 function render(keys, command) {
   cmdEl.innerHTML = `<span class="sigil">$</span> ${command}`;
+  // Web-only derived fields, kept out of the CLI-mirrored JSON below.
+  const display = { ...keys, mnemonic12: noskey.mnemonic12(keys.privkey) };
   for (const k in fieldEls) {
-    const val = keys[k] ?? "";
+    const val = display[k] ?? "";
     const v = fieldEls[k];
     v.dataset.full = val;
     v.textContent = val.length > 200 ? val.slice(0, 120) + "…  (" + val.length + " chars)" : val;

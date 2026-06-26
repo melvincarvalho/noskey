@@ -245,5 +245,12 @@ export function createNoskey(deps) {
     return nip19(getPublicKey(privateKeyHex), "npub");
   }
 
-  return { getAllKeys, getPublicKey, generatePrivateKey, nsecToHex, npubFromPrivate };
+  // Deterministic 12-word BIP39 phrase from the first 128 bits of the private
+  // key. NOT part of getAllKeys()/the CLI — a web-only convenience. One-way:
+  // it encodes only the first half of the key, so it cannot restore the key.
+  function mnemonic12(privateKeyHex) {
+    return entropyToMnemonic(hexToBytes(privateKeyHex).slice(0, 16), wordlist);
+  }
+
+  return { getAllKeys, getPublicKey, generatePrivateKey, nsecToHex, npubFromPrivate, mnemonic12 };
 }
