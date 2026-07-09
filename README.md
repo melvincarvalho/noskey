@@ -82,6 +82,7 @@ Usage: noskey [options]
 Options:
       --version  Show version number
   -v, --vanity   Vanity string
+  -n, --npub     npub Vanity string
   -p, --priv     Private key
   -s, --nsec     From nsec
   -h, --help     Show help
