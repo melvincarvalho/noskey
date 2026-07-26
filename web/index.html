@@ -98,7 +98,9 @@
   .toolbar .left { display: flex; gap: 10px; align-items: center; }
   .group { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
   .group h3 { margin: 0; padding: 14px 18px; font-size: 13px; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
-  .field { display: grid; grid-template-columns: 150px 1fr auto; gap: 12px; align-items: center; padding: 11px 18px; border-bottom: 1px solid var(--line); }
+  .field { display: grid; grid-template-columns: 150px 1fr auto auto; gap: 12px; align-items: center; padding: 11px 18px; border-bottom: 1px solid var(--line); }
+  .field .copy:last-child:nth-child(3) { grid-column: 3 / 5; }
+  .field a.ext { text-decoration: none; line-height: 1; }
   .field:last-child { border-bottom: none; }
   .field .k { font-size: 13px; color: var(--muted); }
   .field .v { font-family: var(--mono); font-size: 13px; word-break: break-all; }
@@ -109,7 +111,7 @@
   .field .copy.done { color: var(--good); border-color: var(--good); }
   pre.json { display: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; box-shadow: var(--shadow); }
   pre.json.on { display: block; }
-  @media (max-width: 560px) { .field { grid-template-columns: 1fr auto; } .field .k { grid-column: 1 / -1; } }
+  @media (max-width: 560px) { .field { grid-template-columns: 1fr auto auto; } .field .k { grid-column: 1 / -1; } .field .v { grid-column: 1 / -1; } }
 
   .err { display:none; background: #fde8e8; color: #9b1c1c; border-radius: var(--radius); padding: 16px 18px; margin-top: 18px; font-size: 14px; }
   @media (prefers-color-scheme: dark) { .err { background: #3a1414; color: #ffb4b4; } }
@@ -192,10 +194,22 @@ const GROUPS = [
 ];
 const BECH32_CHARS = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
+// Block explorers per field — lets users check the balance of each address.
+// No vertcoin entry: no public explorer currently resolves vtc1p taproot.
+const EXPLORERS = {
+  npub:           { name: "njump.me",           url: (v) => `https://njump.me/${v}` },
+  taproot:        { name: "mempool.space",      url: (v) => `https://mempool.space/address/${v}` },
+  taproottestnet: { name: "mempool.space (t4)", url: (v) => `https://mempool.space/testnet4/address/${v}` },
+  liquidtaproot:  { name: "liquid.network",     url: (v) => `https://liquid.network/address/${v}` },
+  litecointaproot:{ name: "litecoinspace.org",  url: (v) => `https://litecoinspace.org/address/${v}` },
+  bip86_p2tr:     { name: "mempool.space (t4)", url: (v) => `https://mempool.space/testnet4/address/${v}` },
+};
+
 const $ = (id) => document.getElementById(id);
 const inputEl = $("input"), goEl = $("go"), cmdEl = $("cmd"), errEl = $("err");
 const resultsEl = $("results"), groupsEl = $("groups"), jsonEl = $("json");
 const fieldEls = {};
+const linkEls = {};
 
 // Build the static result DOM once; values get filled per-generation.
 for (const g of GROUPS) {
@@ -209,6 +223,16 @@ for (const g of GROUPS) {
     fieldEls[key] = v;
     btn.addEventListener("click", () => copy(v.dataset.full || v.textContent, btn));
     if (SECRET.has(key)) v.addEventListener("click", () => row.classList.add("reveal"));
+    if (EXPLORERS[key]) {
+      const a = document.createElement("a");
+      a.className = "copy ext";
+      a.textContent = "↗";
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.title = `View on ${EXPLORERS[key].name}`;
+      linkEls[key] = a;
+      row.appendChild(a);
+    }
     sec.appendChild(row);
   }
   groupsEl.appendChild(sec);
@@ -236,6 +260,7 @@ function render(keys, command) {
     row.classList.remove("reveal");
     // Pubkey-only mode has no secrets etc. — hide rows with nothing to show.
     row.style.display = val ? "" : "none";
+    if (linkEls[k]) linkEls[k].href = val ? EXPLORERS[k].url(val) : "";
   }
   // Hide groups whose rows are all hidden.
   for (const g of groupsEl.children) {
