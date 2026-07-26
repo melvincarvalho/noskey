@@ -4,6 +4,7 @@
 import { generatePrivateKey } from 'nostr-tools'
 import {
 	getAllKeys,
+	getPubKeys,
 	decodeBytes
 } from '../lib/index.js'
 import yargs from 'yargs'
@@ -35,6 +36,10 @@ const argv = yarg
 		describe: 'nsec private key',
 		type: 'string'
 	})
+	.option('pub', {
+		describe: 'Public key (hex or npub) — output only publicly derivable fields',
+		type: 'string'
+	})
 	.help('h')
 	.alias('h', 'help').argv
 
@@ -43,6 +48,18 @@ const argv = yarg
 const vanity = argv.v || ''
 const npubvanity = argv.n || ''
 const nsec = argv.s
+
+// Public-key-only mode: output the subset derivable without a private key
+if (argv.pub) {
+	try {
+		const publicKey = argv.pub.startsWith('npub1') ? decodeBytes(argv.pub) : argv.pub
+		console.log(JSON.stringify(getPubKeys(publicKey), null, 2))
+		process.exit(0)
+	} catch (error) {
+		console.error(error.message)
+		process.exit(1)
+	}
+}
 
 // If no specific key provided and no vanity requirements, just generate one key
 if (!nsec && !argv.p && !vanity && !npubvanity) {

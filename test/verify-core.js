@@ -45,8 +45,70 @@ for (const key of KEYS) {
   }
 }
 
+// --- pubkey-only mode: web core vs CLI --pub, and consistency with getAllKeys
+for (const key of KEYS) {
+  const all = noskey.getAllKeys(key);
+
+  // web core vs CLI --pub (fed the derived pubkey, as hex and as npub)
+  for (const pubInput of [all.pubkey, all.npub]) {
+    const cli = JSON.parse(execFileSync("node", ["bin/noskey.js", "--pub", pubInput], { encoding: "utf8" }));
+    const web = noskey.getPubKeys(all.pubkey);
+    const fields = new Set([...Object.keys(cli), ...Object.keys(web)]);
+    const bad = [...fields].filter((f) => cli[f] !== web[f]);
+    if (bad.length) {
+      failures++;
+      console.log(`FAIL  --pub ${pubInput.slice(0, 14)}…  mismatched: ${bad.join(", ")}`);
+    } else {
+      console.log(`PASS  --pub ${pubInput.slice(0, 14)}…  (${fields.size} fields match)`);
+    }
+  }
+
+  // every getPubKeys field must equal the same field in getAllKeys
+  const pub = noskey.getPubKeys(all.pubkey);
+  const drift = Object.keys(pub).filter((f) => pub[f] !== all[f]);
+  if (drift.length) {
+    failures++;
+    console.log(`FAIL  getPubKeys drift vs getAllKeys: ${drift.join(", ")}`);
+  }
+}
+
+// --- getPubKeys input validation: uppercase normalizes, junk throws
+{
+  const all = noskey.getAllKeys(KEYS[0]);
+  const upper = noskey.getPubKeys(all.pubkey.toUpperCase());
+  if (upper.npub !== all.npub) {
+    failures++;
+    console.log("FAIL  uppercase pubkey not normalized");
+  } else {
+    console.log("PASS  uppercase pubkey normalized");
+  }
+  for (const junk of ["beef", all.pubkey + "00", "z".repeat(64)]) {
+    try {
+      noskey.getPubKeys(junk);
+      failures++;
+      console.log(`FAIL  getPubKeys accepted invalid input: ${junk.slice(0, 20)}`);
+    } catch {
+      console.log(`PASS  getPubKeys rejects ${junk.slice(0, 20)}`);
+    }
+  }
+  // npubToHex must reject wrong HRPs (an nsec is valid bech32 but not an npub)
+  if (noskey.npubToHex(all.npub) !== all.pubkey) {
+    failures++;
+    console.log("FAIL  npubToHex round-trip");
+  } else {
+    console.log("PASS  npubToHex round-trip");
+  }
+  try {
+    noskey.npubToHex(all.nsec);
+    failures++;
+    console.log("FAIL  npubToHex accepted an nsec");
+  } catch {
+    console.log("PASS  npubToHex rejects non-npub HRP");
+  }
+}
+
 if (failures) {
-  console.error(`\n${failures} key(s) mismatched the CLI.`);
+  console.error(`\n${failures} check(s) mismatched the CLI.`);
   process.exit(1);
 }
 console.log("\nAll keys match the CLI exactly. ✅");

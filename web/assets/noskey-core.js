@@ -245,6 +245,40 @@ export function createNoskey(deps) {
     return nip19(getPublicKey(privateKeyHex), "npub");
   }
 
+  // Everything derivable from an x-only public key alone (mirrors lib's
+  // getPubKeys). Compressed pubkey is omitted: y-parity is unknown from an
+  // x-only key, so guessing 02 would differ from getAllKeys for ~half of keys.
+  function getPubKeys(publicKey) {
+    publicKey = String(publicKey).toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(publicKey)) {
+      throw new Error("Invalid public key: expected 32-byte (64 hex chars) x-only key");
+    }
+    return {
+      pubkey: publicKey,
+      didnostr: `did:nostr:${publicKey}`,
+      npub: nip19(publicKey, "npub"),
+      nrepo: nip19(publicKey, "nrepo"),
+      taproot: encodeBytes("bc", publicKey),
+      taproottestnet: encodeBytes("tb", publicKey),
+      liquidtaproot: encodeBytes("ex", publicKey),
+      litecointaproot: encodeBytes("ltc", publicKey),
+      vertcointaproot: encodeBytes("vtc", publicKey),
+    };
+  }
+
+  // Decode an npub to the x-only public key hex.
+  function npubToHex(npub) {
+    const { prefix, words } = bech32.decode(npub);
+    if (prefix !== "npub") {
+      throw new Error(`Expected an npub, got "${prefix}1…"`);
+    }
+    const data = bech32.fromWords(words);
+    if (data.length !== 32) {
+      throw new Error(`Invalid npub payload: expected 32 bytes, got ${data.length}`);
+    }
+    return data.map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
   // Deterministic 12-word BIP39 phrase from the first 128 bits of the private
   // key. NOT part of getAllKeys()/the CLI — a web-only convenience. One-way:
   // it encodes only the first half of the key, so it cannot restore the key.
@@ -252,5 +286,5 @@ export function createNoskey(deps) {
     return entropyToMnemonic(hexToBytes(privateKeyHex).slice(0, 16), wordlist);
   }
 
-  return { getAllKeys, getPublicKey, generatePrivateKey, nsecToHex, npubFromPrivate, mnemonic12 };
+  return { getAllKeys, getPubKeys, getPublicKey, generatePrivateKey, nsecToHex, npubToHex, npubFromPrivate, mnemonic12 };
 }
