@@ -81,7 +81,7 @@ describe('CLI: Output format', () => {
     // Should have all expected fields
     const expectedFields = [
       'privkey', 'nsec', 'pubkey', 'didnostr', 'pubkeycompressed',
-      'npub', 'nrepo', 'taproot', 'taproottestnet', 'liquidtaproot',
+      'npub', 'taproot', 'taproottestnet', 'liquidtaproot',
       'ed25519pubkey', 'pubky', 'mnemonic', 'bip86_tprv', 'bip86_tpub',
       'bip86_p2tr', 'openSSHed25519pubkey', 'openSSHed25519privkey'
     ]
