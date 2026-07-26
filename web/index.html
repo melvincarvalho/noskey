@@ -129,11 +129,12 @@
 
   <div class="controls">
     <input type="text" id="input" autocomplete="off" autocapitalize="off" spellcheck="false"
-      placeholder="empty = random  ·  or a privkey / nsec / vanity prefix" />
+      placeholder="empty = random  ·  or a privkey / nsec / npub / vanity prefix" />
     <button class="primary" id="go" disabled>Loading…</button>
   </div>
   <p class="hint">Leave it empty and hit <b>Generate</b> for a fresh random key. Or paste a 64-char hex
-    <code>privkey</code>, an <code>nsec1…</code>, or type a short prefix (e.g. <code>sat</code>) to mine a vanity npub.</p>
+    <code>privkey</code>, an <code>nsec1…</code>, an <code>npub1…</code> (public fields only),
+    or type a short prefix (e.g. <code>sat</code>) to mine a vanity npub.</p>
 
   <div class="miner" id="miner">
     <div class="miner-head"><span class="spinner"></span> Mining for <code id="miner-target"></code>…</div>
@@ -224,13 +225,22 @@ async function copy(text, btn) {
 function render(keys, command) {
   cmdEl.innerHTML = `<span class="sigil">$</span> ${command}`;
   // Web-only derived fields, kept out of the CLI-mirrored JSON below.
-  const display = { ...keys, mnemonic12: noskey.mnemonic12(keys.privkey) };
+  const display = { ...keys };
+  if (keys.privkey) display.mnemonic12 = noskey.mnemonic12(keys.privkey);
   for (const k in fieldEls) {
     const val = display[k] ?? "";
     const v = fieldEls[k];
     v.dataset.full = val;
     v.textContent = val.length > 200 ? val.slice(0, 120) + "…  (" + val.length + " chars)" : val;
-    v.closest(".field").classList.remove("reveal");
+    const row = v.closest(".field");
+    row.classList.remove("reveal");
+    // Pubkey-only mode has no secrets etc. — hide rows with nothing to show.
+    row.style.display = val ? "" : "none";
+  }
+  // Hide groups whose rows are all hidden.
+  for (const g of groupsEl.children) {
+    const anyVisible = [...g.querySelectorAll(".field")].some((r) => r.style.display !== "none");
+    g.style.display = anyVisible ? "" : "none";
   }
   jsonEl.textContent = JSON.stringify(keys, null, 2);
   resultsEl.classList.add("on");
@@ -247,6 +257,7 @@ function classify(raw) {
   if (!s) return { mode: "random" };
   if (/^[0-9a-fA-F]{64}$/.test(s)) return { mode: "priv", value: s.toLowerCase() };
   if (/^nsec1[0-9a-z]+$/.test(s)) return { mode: "nsec", value: s };
+  if (/^npub1[0-9a-z]+$/.test(s)) return { mode: "pub", value: s };
   return { mode: "vanity", value: s.toLowerCase() };
 }
 
@@ -261,6 +272,9 @@ function generateFrom(cls) {
     } else if (cls.mode === "nsec") {
       const p = noskey.nsecToHex(cls.value);
       render(noskey.getAllKeys(p), `noskey -s ${short(cls.value)}`);
+    } else if (cls.mode === "pub") {
+      const pub = /^npub1/.test(cls.value) ? noskey.npubToHex(cls.value) : cls.value.toLowerCase();
+      render(noskey.getPubKeys(pub), `noskey --pub ${short(cls.value)}`);
     }
   } catch (e) {
     showErr("Couldn't derive keys from that input: " + e.message);
@@ -335,9 +349,17 @@ $("reveal").addEventListener("click", () => {
 $("toggle-json").addEventListener("click", () => jsonEl.classList.toggle("on"));
 $("copy-json").addEventListener("click", (e) => { if (lastKeys) copy(JSON.stringify(lastKeys, null, 2), e.target); });
 
-// boot
+// boot — a ?pubkey=<hex|npub> query param renders a shareable public view.
+// (Public keys only: never accept secrets via URL — they leak into history/logs.)
 goEl.disabled = false; goEl.textContent = "Generate";
-generateFrom({ mode: "random" });
+const qpub = new URLSearchParams(location.search).get("pubkey");
+if (qpub && (/^[0-9a-fA-F]{64}$/.test(qpub) || /^npub1[0-9a-z]+$/.test(qpub))) {
+  inputEl.value = qpub;
+  goEl.textContent = "Derive";
+  generateFrom({ mode: "pub", value: qpub });
+} else {
+  generateFrom({ mode: "random" });
+}
 </script>
 </body>
 </html>

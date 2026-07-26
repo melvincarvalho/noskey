@@ -45,8 +45,35 @@ for (const key of KEYS) {
   }
 }
 
+// --- pubkey-only mode: web core vs CLI --pub, and consistency with getAllKeys
+for (const key of KEYS) {
+  const all = noskey.getAllKeys(key);
+
+  // web core vs CLI --pub (fed the derived pubkey, as hex and as npub)
+  for (const pubInput of [all.pubkey, all.npub]) {
+    const cli = JSON.parse(execFileSync("node", ["bin/noskey.js", "--pub", pubInput], { encoding: "utf8" }));
+    const web = noskey.getPubKeys(all.pubkey);
+    const fields = new Set([...Object.keys(cli), ...Object.keys(web)]);
+    const bad = [...fields].filter((f) => cli[f] !== web[f]);
+    if (bad.length) {
+      failures++;
+      console.log(`FAIL  --pub ${pubInput.slice(0, 14)}…  mismatched: ${bad.join(", ")}`);
+    } else {
+      console.log(`PASS  --pub ${pubInput.slice(0, 14)}…  (${fields.size} fields match)`);
+    }
+  }
+
+  // every getPubKeys field must equal the same field in getAllKeys
+  const pub = noskey.getPubKeys(all.pubkey);
+  const drift = Object.keys(pub).filter((f) => pub[f] !== all[f]);
+  if (drift.length) {
+    failures++;
+    console.log(`FAIL  getPubKeys drift vs getAllKeys: ${drift.join(", ")}`);
+  }
+}
+
 if (failures) {
-  console.error(`\n${failures} key(s) mismatched the CLI.`);
+  console.error(`\n${failures} check(s) mismatched the CLI.`);
   process.exit(1);
 }
 console.log("\nAll keys match the CLI exactly. ✅");

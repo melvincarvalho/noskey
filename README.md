@@ -66,6 +66,12 @@ Generate a from private key
 npx noskey -p 123
 ```
 
+Show the publicly derivable fields of a public key (hex or npub)
+
+```bash
+npx noskey --pub npub1xyz2l5auvptxt50f9t7uxwa4pkxcc3ef8ytrwn6949jlcwg2qvesle5tfn
+```
+
 Install locally
 
 ```bash
@@ -85,6 +91,7 @@ Options:
   -n, --npub     npub Vanity string
   -p, --priv     Private key
   -s, --nsec     From nsec
+      --pub      Public key (hex or npub) — output only publicly derivable fields
   -h, --help     Show help
 ```
 
