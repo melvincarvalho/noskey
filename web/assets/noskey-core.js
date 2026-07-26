@@ -249,6 +249,10 @@ export function createNoskey(deps) {
   // getPubKeys). Compressed pubkey is omitted: y-parity is unknown from an
   // x-only key, so guessing 02 would differ from getAllKeys for ~half of keys.
   function getPubKeys(publicKey) {
+    publicKey = String(publicKey).toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(publicKey)) {
+      throw new Error("Invalid public key: expected 32-byte (64 hex chars) x-only key");
+    }
     return {
       pubkey: publicKey,
       didnostr: `did:nostr:${publicKey}`,

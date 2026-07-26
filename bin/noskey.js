@@ -51,9 +51,14 @@ const nsec = argv.s
 
 // Public-key-only mode: output the subset derivable without a private key
 if (argv.pub) {
-	const publicKey = argv.pub.startsWith('npub1') ? decodeBytes(argv.pub) : argv.pub
-	console.log(JSON.stringify(getPubKeys(publicKey), null, 2))
-	process.exit(0)
+	try {
+		const publicKey = argv.pub.startsWith('npub1') ? decodeBytes(argv.pub) : argv.pub
+		console.log(JSON.stringify(getPubKeys(publicKey), null, 2))
+		process.exit(0)
+	} catch (error) {
+		console.error(error.message)
+		process.exit(1)
+	}
 }
 
 // If no specific key provided and no vanity requirements, just generate one key

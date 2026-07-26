@@ -72,6 +72,27 @@ for (const key of KEYS) {
   }
 }
 
+// --- getPubKeys input validation: uppercase normalizes, junk throws
+{
+  const all = noskey.getAllKeys(KEYS[0]);
+  const upper = noskey.getPubKeys(all.pubkey.toUpperCase());
+  if (upper.npub !== all.npub) {
+    failures++;
+    console.log("FAIL  uppercase pubkey not normalized");
+  } else {
+    console.log("PASS  uppercase pubkey normalized");
+  }
+  for (const junk of ["beef", all.pubkey + "00", "z".repeat(64)]) {
+    try {
+      noskey.getPubKeys(junk);
+      failures++;
+      console.log(`FAIL  getPubKeys accepted invalid input: ${junk.slice(0, 20)}`);
+    } catch {
+      console.log(`PASS  getPubKeys rejects ${junk.slice(0, 20)}`);
+    }
+  }
+}
+
 if (failures) {
   console.error(`\n${failures} check(s) mismatched the CLI.`);
   process.exit(1);
