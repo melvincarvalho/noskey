@@ -98,6 +98,8 @@
   .toolbar .left { display: flex; gap: 10px; align-items: center; }
   .group { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
   .group h3 { margin: 0; padding: 14px 18px; font-size: 13px; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 8px; }
+  .group h3 a.aside { margin-left: auto; font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--muted); text-decoration: none; }
+  .group h3 a.aside:hover { color: var(--accent); text-decoration: underline; }
   .field { display: grid; grid-template-columns: 150px 1fr auto auto; gap: 12px; align-items: center; padding: 11px 18px; border-bottom: 1px solid var(--line); }
   .field .copy:last-child:nth-child(3) { grid-column: 3 / 5; }
   .field a.ext { text-decoration: none; line-height: 1; }
@@ -182,7 +184,7 @@ const GROUPS = [
     ["privkey", "private key (hex)"], ["nsec", "nsec"],
     ["mnemonic", "BIP39 mnemonic (24w)"], ["mnemonic12", "12-word phrase (first 128 bits)"],
   ]},
-  { title: "₿ Bitcoin · Taproot", fields: [
+  { title: `₿ Bitcoin · Taproot <a class="aside" href="https://github.com/testnet4/awesome-testnet4#faucets" target="_blank" rel="noopener noreferrer">testnet4 faucets ↗</a>`, fields: [
     ["pubkeycompressed", "compressed pubkey"], ["taproot", "taproot (bc)"], ["taproottestnet", "taproot testnet (tb)"],
     ["liquidtaproot", "liquid (ex)"], ["litecointaproot", "litecoin (ltc)"], ["vertcointaproot", "vertcoin (vtc)"],
     ["bip86_tpub", "BIP86 tpub"], ["bip86_tprv", "BIP86 tprv"], ["bip86_p2tr", "BIP86 P2TR address"],
