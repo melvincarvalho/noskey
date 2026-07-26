@@ -91,6 +91,20 @@ for (const key of KEYS) {
       console.log(`PASS  getPubKeys rejects ${junk.slice(0, 20)}`);
     }
   }
+  // npubToHex must reject wrong HRPs (an nsec is valid bech32 but not an npub)
+  if (noskey.npubToHex(all.npub) !== all.pubkey) {
+    failures++;
+    console.log("FAIL  npubToHex round-trip");
+  } else {
+    console.log("PASS  npubToHex round-trip");
+  }
+  try {
+    noskey.npubToHex(all.nsec);
+    failures++;
+    console.log("FAIL  npubToHex accepted an nsec");
+  } catch {
+    console.log("PASS  npubToHex rejects non-npub HRP");
+  }
 }
 
 if (failures) {

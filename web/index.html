@@ -353,14 +353,20 @@ $("copy-json").addEventListener("click", (e) => { if (lastKeys) copy(JSON.string
 // (Public keys only: never accept secrets via URL — they leak into history/logs.)
 goEl.disabled = false; goEl.textContent = "Generate";
 const qpub = new URLSearchParams(location.search).get("pubkey");
-if (qpub && (/^[0-9a-fA-F]{64}$/.test(qpub) || /^npub1[0-9a-z]+$/.test(qpub))) {
+if (qpub) {
+  // A share link must never silently fall through to random generation —
+  // surface bad values instead of showing unrelated keys.
   try {
-    // Normalize the input box to the npub form: a raw 64-hex value would
-    // re-classify as a private key on the next Derive press and leak into
-    // getAllKeys — npub is unambiguous, so re-deriving stays public.
+    if (!/^[0-9a-fA-F]{64}$/.test(qpub) && !/^npub1[0-9a-z]+$/.test(qpub)) {
+      throw new Error("expected a 64-char hex pubkey or npub1…");
+    }
+    // Normalize the input box (and URL) to the npub form: a raw 64-hex value
+    // would re-classify as a private key on the next Derive press and leak
+    // into getAllKeys — npub is unambiguous, so re-deriving stays public.
     const hex = /^npub1/.test(qpub) ? noskey.npubToHex(qpub) : qpub.toLowerCase();
     const npub = noskey.getPubKeys(hex).npub;
     inputEl.value = npub;
+    if (qpub !== npub) history.replaceState(null, "", "?pubkey=" + npub);
     goEl.textContent = "Derive";
     generateFrom({ mode: "pub", value: npub });
   } catch (e) {

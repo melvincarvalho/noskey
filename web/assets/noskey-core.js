@@ -268,8 +268,14 @@ export function createNoskey(deps) {
 
   // Decode an npub to the x-only public key hex.
   function npubToHex(npub) {
-    const { words } = bech32.decode(npub);
+    const { prefix, words } = bech32.decode(npub);
+    if (prefix !== "npub") {
+      throw new Error(`Expected an npub, got "${prefix}1…"`);
+    }
     const data = bech32.fromWords(words);
+    if (data.length !== 32) {
+      throw new Error(`Invalid npub payload: expected 32 bytes, got ${data.length}`);
+    }
     return data.map((b) => b.toString(16).padStart(2, "0")).join("");
   }
 
