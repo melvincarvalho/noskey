@@ -133,11 +133,11 @@
 
   <div class="controls">
     <input type="text" id="input" autocomplete="off" autocapitalize="off" spellcheck="false"
-      placeholder="empty = random  ·  or a privkey / nsec / npub / vanity prefix" />
+      placeholder="empty = random  ·  or a privkey / nsec / npub / did / vanity prefix" />
     <button class="primary" id="go" disabled>Loading…</button>
   </div>
   <p class="hint">Leave it empty and hit <b>Generate</b> for a fresh random key. Or paste a 64-char hex
-    <code>privkey</code>, an <code>nsec1…</code>, an <code>npub1…</code> (public fields only),
+    <code>privkey</code>, an <code>nsec1…</code>, an <code>npub1…</code> or <code>did:nostr:…</code> (public fields only),
     or type a short prefix (e.g. <code>sat</code>) to mine a vanity npub.</p>
 
   <div class="miner" id="miner">
@@ -287,7 +287,14 @@ function classify(raw) {
   if (/^[0-9a-fA-F]{64}$/.test(s)) return { mode: "priv", value: s.toLowerCase() };
   if (/^nsec1[0-9a-z]+$/.test(s)) return { mode: "nsec", value: s };
   if (/^npub1[0-9a-z]+$/.test(s)) return { mode: "pub", value: s };
+  if (/^did:nostr:[0-9a-fA-F]{64}$/i.test(s)) return { mode: "pub", value: s };
   return { mode: "vanity", value: s.toLowerCase() };
+}
+
+// npub, did:nostr:<hex>, or bare hex -> x-only pubkey hex
+function toPubHex(v) {
+  if (/^npub1/.test(v)) return noskey.npubToHex(v);
+  return v.replace(/^did:nostr:/i, "").toLowerCase();
 }
 
 function generateFrom(cls) {
@@ -302,8 +309,7 @@ function generateFrom(cls) {
       const p = noskey.nsecToHex(cls.value);
       render(noskey.getAllKeys(p), `noskey -s ${short(cls.value)}`);
     } else if (cls.mode === "pub") {
-      const pub = /^npub1/.test(cls.value) ? noskey.npubToHex(cls.value) : cls.value.toLowerCase();
-      render(noskey.getPubKeys(pub), `noskey --pub ${short(cls.value)}`);
+      render(noskey.getPubKeys(toPubHex(cls.value)), `noskey --pub ${short(cls.value)}`);
     }
   } catch (e) {
     showErr("Couldn't derive keys from that input: " + e.message);
@@ -386,13 +392,13 @@ if (qpub) {
   // A share link must never silently fall through to random generation —
   // surface bad values instead of showing unrelated keys.
   try {
-    if (!/^[0-9a-fA-F]{64}$/.test(qpub) && !/^npub1[0-9a-z]+$/.test(qpub)) {
-      throw new Error("expected a 64-char hex pubkey or npub1…");
+    if (!/^[0-9a-fA-F]{64}$/.test(qpub) && !/^npub1[0-9a-z]+$/.test(qpub) && !/^did:nostr:[0-9a-fA-F]{64}$/i.test(qpub)) {
+      throw new Error("expected a 64-char hex pubkey, npub1…, or did:nostr:…");
     }
     // Normalize the input box (and URL) to the npub form: a raw 64-hex value
     // would re-classify as a private key on the next Derive press and leak
     // into getAllKeys — npub is unambiguous, so re-deriving stays public.
-    const hex = /^npub1/.test(qpub) ? noskey.npubToHex(qpub) : qpub.toLowerCase();
+    const hex = toPubHex(qpub);
     const npub = noskey.getPubKeys(hex).npub;
     inputEl.value = npub;
     if (qpub !== npub) history.replaceState(null, "", "?pubkey=" + npub);
