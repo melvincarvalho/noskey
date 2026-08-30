@@ -83,7 +83,7 @@ export function createNoskey(deps) {
     return secp.utils.bytesToHex(secp.schnorr.getPublicKey(privateKeyHex));
   }
 
-  // nostr nip-19 style bech32 (npub/nsec/nrepo), default limit
+  // nostr nip-19 style bech32 (npub/nsec), default limit
   function nip19(dataHex, prefix) {
     const words = bech32.toWords(hexToBytes(dataHex));
     return bech32.encode(prefix, words);
@@ -189,7 +189,6 @@ export function createNoskey(deps) {
 
     const publicKey = getPublicKey(privateKey);
     const npub = nip19(publicKey, "npub");
-    const nrepo = nip19(publicKey, "nrepo");
 
     const ed25519Keypair = nacl.sign.keyPair.fromSeed(hexToBytes(privateKey));
     const ed25519pubkey = bytesToHex(ed25519Keypair.publicKey);
@@ -210,7 +209,6 @@ export function createNoskey(deps) {
       didnostr: `did:nostr:${publicKey}`,
       pubkeycompressed: compressed,
       npub,
-      nrepo,
       taproot: encodeBytes(taproot_prefix, publicKey),
       taproottestnet: encodeBytes(taproot_testnet_prefix, publicKey),
       liquidtaproot: encodeBytes(liquid_prefix, publicKey),
@@ -257,7 +255,6 @@ export function createNoskey(deps) {
       pubkey: publicKey,
       didnostr: `did:nostr:${publicKey}`,
       npub: nip19(publicKey, "npub"),
-      nrepo: nip19(publicKey, "nrepo"),
       taproot: encodeBytes("bc", publicKey),
       taproottestnet: encodeBytes("tb", publicKey),
       liquidtaproot: encodeBytes("ex", publicKey),
