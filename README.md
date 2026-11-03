@@ -2,6 +2,8 @@
   <h1>noskey</h1>
 </div>
 
+[![Mind map](https://mindstr.org/badge.svg)](https://mindstr.org/?uri=https://melvincarvalho.github.io/noskey/mindstr/index.jsonld)
+
 <div align="center">  
 Generate nostr keys from command line
 </div>

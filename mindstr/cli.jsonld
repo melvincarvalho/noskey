@@ -1,0 +1,265 @@
+{
+  "@context": {
+    "@vocab": "https://mindstr.org/ns#",
+    "link": {
+      "@type": "@id"
+    },
+    "parent": {
+      "@type": "@id"
+    }
+  },
+  "version": "0.2",
+  "nodes": [
+    {
+      "@id": "#this",
+      "name": "noskey CLI · 8 options",
+      "x": 0,
+      "y": 0,
+      "bgColor": "#ebc573"
+    },
+    {
+      "@id": "#ab9ysn",
+      "name": "Options · 8",
+      "x": 48,
+      "y": 191,
+      "bgColor": "#acd5ff",
+      "parent": "#this"
+    },
+    {
+      "@id": "#qhtzie",
+      "name": "options 1/2",
+      "x": 415,
+      "y": 94,
+      "bgColor": "#97deef",
+      "parent": "#ab9ysn"
+    },
+    {
+      "@id": "#2sgmjt",
+      "name": "--version",
+      "x": 599,
+      "y": -165,
+      "bgColor": "#d2f2fa",
+      "parent": "#qhtzie"
+    },
+    {
+      "@id": "#j9h6ge",
+      "name": "Show version number…",
+      "x": 790,
+      "y": -217,
+      "bgColor": "#ececec",
+      "parent": "#2sgmjt"
+    },
+    {
+      "@id": "#ejt2c7",
+      "name": "-v",
+      "x": 698,
+      "y": 47,
+      "bgColor": "#d2f2fa",
+      "parent": "#qhtzie"
+    },
+    {
+      "@id": "#tvx8v7",
+      "name": "Vanity string…",
+      "x": 827,
+      "y": 55,
+      "bgColor": "#ececec",
+      "parent": "#ejt2c7"
+    },
+    {
+      "@id": "#4bfmpa",
+      "name": "-n",
+      "x": 564,
+      "y": 239,
+      "bgColor": "#d2f2fa",
+      "parent": "#qhtzie"
+    },
+    {
+      "@id": "#c2mpq8",
+      "name": "npub Vanity string…",
+      "x": 743,
+      "y": 314,
+      "bgColor": "#ececec",
+      "parent": "#4bfmpa"
+    },
+    {
+      "@id": "#yykmee",
+      "name": "-p",
+      "x": 464,
+      "y": 445,
+      "bgColor": "#d2f2fa",
+      "parent": "#qhtzie"
+    },
+    {
+      "@id": "#7kgwkb",
+      "name": "Private key…",
+      "x": 550,
+      "y": 528,
+      "bgColor": "#ececec",
+      "parent": "#yykmee"
+    },
+    {
+      "@id": "#x7t4w7",
+      "name": "options 2/2",
+      "x": -281,
+      "y": 277,
+      "bgColor": "#cccbff",
+      "parent": "#ab9ysn"
+    },
+    {
+      "@id": "#dsw684",
+      "name": "-s",
+      "x": 13,
+      "y": 535,
+      "bgColor": "#e9e8ff",
+      "parent": "#x7t4w7"
+    },
+    {
+      "@id": "#v88t4a",
+      "name": "nsec private key…",
+      "x": 17,
+      "y": 705,
+      "bgColor": "#ececec",
+      "parent": "#dsw684"
+    },
+    {
+      "@id": "#skzt29",
+      "name": "--pub",
+      "x": -348,
+      "y": 516,
+      "bgColor": "#e9e8ff",
+      "parent": "#x7t4w7"
+    },
+    {
+      "@id": "#t4pwzt",
+      "name": "Public key (hex or npub) — output only…",
+      "x": -413,
+      "y": 612,
+      "bgColor": "#ececec",
+      "parent": "#skzt29"
+    },
+    {
+      "@id": "#jhaa84",
+      "name": "s",
+      "x": -550,
+      "y": 260,
+      "bgColor": "#e9e8ff",
+      "parent": "#x7t4w7"
+    },
+    {
+      "@id": "#wavvy9",
+      "name": "[string]",
+      "x": -725,
+      "y": 343,
+      "bgColor": "#ececec",
+      "parent": "#jhaa84"
+    },
+    {
+      "@id": "#i9w3v4",
+      "name": "-h",
+      "x": -694,
+      "y": 76,
+      "bgColor": "#e9e8ff",
+      "parent": "#x7t4w7"
+    },
+    {
+      "@id": "#e9sufn",
+      "name": "Show help…",
+      "x": -823,
+      "y": 90,
+      "bgColor": "#ececec",
+      "parent": "#i9w3v4"
+    },
+    {
+      "@id": "#g45zx9",
+      "name": "← noskey",
+      "x": -48,
+      "y": -191,
+      "link": "./index.jsonld",
+      "bgColor": "#ececec",
+      "parent": "#this"
+    }
+  ],
+  "connections": [
+    {
+      "start": 0,
+      "end": 1
+    },
+    {
+      "start": 1,
+      "end": 2
+    },
+    {
+      "start": 2,
+      "end": 3
+    },
+    {
+      "start": 3,
+      "end": 4
+    },
+    {
+      "start": 2,
+      "end": 5
+    },
+    {
+      "start": 5,
+      "end": 6
+    },
+    {
+      "start": 2,
+      "end": 7
+    },
+    {
+      "start": 7,
+      "end": 8
+    },
+    {
+      "start": 2,
+      "end": 9
+    },
+    {
+      "start": 9,
+      "end": 10
+    },
+    {
+      "start": 1,
+      "end": 11
+    },
+    {
+      "start": 11,
+      "end": 12
+    },
+    {
+      "start": 12,
+      "end": 13
+    },
+    {
+      "start": 11,
+      "end": 14
+    },
+    {
+      "start": 14,
+      "end": 15
+    },
+    {
+      "start": 11,
+      "end": 16
+    },
+    {
+      "start": 16,
+      "end": 17
+    },
+    {
+      "start": 11,
+      "end": 18
+    },
+    {
+      "start": 18,
+      "end": 19
+    },
+    {
+      "start": 0,
+      "end": 20
+    }
+  ],
+  "selectedNode": 0
+}

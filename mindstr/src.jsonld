@@ -1,0 +1,51 @@
+{
+  "@context": {
+    "@vocab": "https://mindstr.org/ns#",
+    "link": {
+      "@type": "@id"
+    },
+    "parent": {
+      "@type": "@id"
+    }
+  },
+  "version": "0.2",
+  "nodes": [
+    {
+      "@id": "#this",
+      "name": "noskey source",
+      "x": 0,
+      "y": 0,
+      "link": "https://github.com/melvincarvalho/noskey/tree/gh-pages/lib",
+      "bgColor": "#ebc573"
+    },
+    {
+      "@id": "#ab9ysn",
+      "name": "index.js",
+      "x": 199,
+      "y": 98,
+      "link": "https://github.com/melvincarvalho/noskey/blob/gh-pages/lib/index.js",
+      "bgColor": "#acd5ff",
+      "parent": "#this"
+    },
+    {
+      "@id": "#qhtzie",
+      "name": "← noskey",
+      "x": -199,
+      "y": -98,
+      "link": "./index.jsonld",
+      "bgColor": "#ececec",
+      "parent": "#this"
+    }
+  ],
+  "connections": [
+    {
+      "start": 0,
+      "end": 1
+    },
+    {
+      "start": 0,
+      "end": 2
+    }
+  ],
+  "selectedNode": 0
+}

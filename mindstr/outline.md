@@ -1,0 +1,51 @@
+# [noskey](https://github.com/melvincarvalho/noskey)
+
+- [Live site](https://melvincarvalho.github.io/noskey/)
+  - [Generate nostr keys from command line](https://melvincarvalho.github.io/noskey/)
+  - [melvincarvalho.github.io/noskey](https://melvincarvalho.github.io/noskey/)
+  - [since Jan 2023 · last 12 Aug 2026](https://github.com/melvincarvalho/noskey/commits/gh-pages)
+- docs · 3
+  - [Global](https://melvincarvalho.github.io/noskey/docs/global.html)
+  - [noskey](https://melvincarvalho.github.io/noskey/docs/index.html)
+  - [index.js](https://melvincarvalho.github.io/noskey/docs/index.js.html)
+- [CLI · 8 options ›](./cli.jsonld)
+  - Options · 8
+    - options 1/2
+      - --version
+        - Show version number…
+      - -v
+        - Vanity string…
+      - -n
+        - npub Vanity string…
+      - -p
+        - Private key…
+    - options 2/2
+      - -s
+        - nsec private key…
+      - --pub
+        - Public key (hex or npub) — output only…
+      - s
+        - [string]
+      - -h
+        - Show help…
+- [Source · lib/ · 1 files ›](./src.jsonld)
+  - [index.js](https://github.com/melvincarvalho/noskey/blob/gh-pages/lib/index.js)
+- [README](https://github.com/melvincarvalho/noskey/blob/gh-pages/README.md#readme)
+  - [⚡️ Features](https://github.com/melvincarvalho/noskey/blob/gh-pages/README.md#features)
+  - [✍️ Getting Started](https://github.com/melvincarvalho/noskey/blob/gh-pages/README.md#getting-started)
+  - [Example Output](https://github.com/melvincarvalho/noskey/blob/gh-pages/README.md#example-output)
+  - [📚 Documentation](https://github.com/melvincarvalho/noskey/blob/gh-pages/README.md#documentation)
+- [Open · 5](https://github.com/melvincarvalho/noskey/issues)
+  - [Open PRs · 2](https://github.com/melvincarvalho/noskey/pulls)
+    - [#14 Remove nrepo from getAllKeys/getPub…](https://github.com/melvincarvalho/noskey/pull/14)
+    - [#5 Fix typo: 'Documenatation' → 'Docum…](https://github.com/melvincarvalho/noskey/pull/5)
+  - [Open issues · 3](https://github.com/melvincarvalho/noskey/issues)
+    - [#13 Remove nrepo from getAllKeys/getPub…](https://github.com/melvincarvalho/noskey/issues/13)
+    - [#2 npm i -g noskey results in libnode.…](https://github.com/melvincarvalho/noskey/issues/2)
+    - [#1 Support resolve from bip39 mnemonic…](https://github.com/melvincarvalho/noskey/issues/1)
+- [Examples · 5](https://github.com/melvincarvalho/noskey/tree/gh-pages/examples)
+  - [faq.html](https://github.com/melvincarvalho/noskey/blob/gh-pages/examples/faq.html)
+  - [generator.js](https://github.com/melvincarvalho/noskey/blob/gh-pages/examples/generator.js)
+  - [index.html](https://github.com/melvincarvalho/noskey/blob/gh-pages/examples/index.html)
+  - [nostrogen.js](https://github.com/melvincarvalho/noskey/blob/gh-pages/examples/nostrogen.js)
+  - [style.css](https://github.com/melvincarvalho/noskey/blob/gh-pages/examples/style.css)
